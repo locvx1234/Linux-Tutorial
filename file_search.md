@@ -22,3 +22,54 @@ We can pipe the output of one command or program into another as its input.
 $ command1 | command2 | command3
 ```
 The above represents what we often call a _pipeline_ and allows linux to combine the actions of several commands into one. 
+
+###Search for files
+The ``locate`` utility performs a search through a previously constructed database of files and directories on your system, matching all entries that contain a specified character string. The ``locate`` utilizes the database created by another program, ``updatedb``. Most Linux systems run this automatically once a day. However, you can update it at any time by just running ``updatedb`` from the command line as the root user.
+```
+# yum install -y mlocate
+# updatedb
+# locate zip
+```
+The result of ``locate`` utility can sometimes result in a very long list. To get a shorter more relevant list we can use the ``grep`` program as a filter. It will print only the lines that contain one or more specified strings as in: 
+```
+$ locate zip | grep bin
+/usr/bin/gpg-zip
+/usr/bin/gunzip
+/usr/bin/gzip
+/usr/bin/zipdetails
+```
+which will list all files and directories with both "zip" and "bin" in their name. 
+
+Wildcards can be used in search for a filename containing specific characters.
+
+|Wildcards|Result|
+|---------|-----------|
+|?     |Matches any single character|
+|*     |Matches any string of characters|
+|[set] |Matches any character not in the set of characters|
+|[!set]|Matches any character not in the set of characters|
+
+The ``find`` is extremely useful and often-used utility program in the daily life of a Linux system administrator. It recurses down the filesystem tree from any particular directory (or set of directories) and locates files that match specified conditions. The default <pathname> is always the present working directory.
+```
+$ find /var -name *.log
+/var/log/audit/audit.log
+/var/log/tuned/tuned.log
+/var/log/anaconda/anaconda.log
+/var/log/anaconda/anaconda.program.log
+/var/log/anaconda/anaconda.packaging.log
+/var/log/anaconda/anaconda.storage.log
+```
+When no arguments are given, ``find`` lists all files in the current directory and all of its subdirectories. Commonly used options to shorten the list include -name option, -iname, and -type which will restrict the results to files of a certain specified type, such as d for directory, l for symbolic link or f for a regular file, etc. 
+
+Searching for files and directories named "gcc":
+```
+$ find /usr -name gcc
+```
+Searching only for directories named "gcc":
+```
+$ find /usr -type d -name gcc
+```
+Searching only for regular files named "test1":
+```
+$ find /usr -type f -name test1
+```
