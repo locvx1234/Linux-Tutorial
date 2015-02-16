@@ -94,3 +94,42 @@ Finding based on sizes:
 $ find / -size +10M
 ```
 To find files greater than 10 MB in size.
+
+###Manage files
+Use the following utilities to view files:
+
+|Command|Usage|
+|-------|-----------|
+|cat  |Used for viewing files that are not very long|
+|tac  |Used to look at a file backwards, starting with the last line|
+|less |Used to view larger files because it is a paging program; it pauses at each screenful of text, provides scroll-back capabilities, and lets you search and navigate within the file.|
+|tail |Used to print the last 10 lines of a file by default. You can change the number of lines by doing -n 15 or just -15 if you wanted to look at the last 15 lines instead of the default|
+|head |The opposite of tail; by default it prints the first 10 lines of a file|
+
+The ``touch`` command is often used to set or update the access, change, and modify times of files. By default it resets a file's time stamp to match the current time.
+
+However, you can also create an empty file using touch:
+```
+$ touch <filename>
+```
+This is normally done to create an empty file as a placeholder for a later purpose.
+The -t option allows you to set the date and time stamp of the file.
+To set the time stamp to a specific time:
+```
+$ touch -t 03201600 <filename>
+```
+This sets the file, myfile's, time stamp to 4 p.m., March 20th (03 20 1600).
+
+The ``mkdir`` command is used to create a directory. Removing a directory is simply done with ``rmdir`` command. The directory must be empty or it will fail.
+```
+# mkdir ./test
+# rmdir ./test
+# mkdir ./test
+mkdir ./test/inside
+# rmdir ./test
+rmdir: failed to remove ‘test’: Directory not empty
+# rm -rf ./test
+# ls ./test
+ls: cannot access ./test: No such file or directory
+```
+
