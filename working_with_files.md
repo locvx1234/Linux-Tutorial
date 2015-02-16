@@ -124,8 +124,9 @@ The ``mkdir`` command is used to create a directory. Removing a directory is sim
 ```
 # mkdir ./test
 # rmdir ./test
+# 
 # mkdir ./test
-mkdir ./test/inside
+# mkdir ./test/inside
 # rmdir ./test
 rmdir: failed to remove ‘test’: Directory not empty
 # rm -rf ./test
