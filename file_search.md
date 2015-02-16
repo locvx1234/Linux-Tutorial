@@ -59,7 +59,7 @@ $ find /var -name *.log
 /var/log/anaconda/anaconda.packaging.log
 /var/log/anaconda/anaconda.storage.log
 ```
-When no arguments are given, ``find`` lists all files in the current directory and all of its subdirectories. Commonly used options to shorten the list include -name option, -iname, and -type which will restrict the results to files of a certain specified type, such as d for directory, l for symbolic link or f for a regular file, etc. 
+When no arguments are given, ``find`` lists all files in the current directory and all of its subdirectories.
 
 Searching for files and directories named "gcc":
 ```
@@ -73,3 +73,8 @@ Searching only for regular files named "test1":
 ```
 $ find /usr -type f -name test1
 ```
+Another good use of ``find`` is being able to run commands on the files that match your search criteria. To find and remove all files that end with .swp:
+```
+$ find -name "*.swp" -exec rm {} ’;’
+```
+The {} is a place holder that will be filled with all the file names that result from the find expression, and the preceding command will be run on each one individually. Note that you have to end the command with either ‘;’ or \; Both forms are fine. One can also use the -ok option which behaves the same as -exec except that find will prompt you for permission before executing the command. This makes it a good way to test your results before blindly executing any potentially dangerous commands.
