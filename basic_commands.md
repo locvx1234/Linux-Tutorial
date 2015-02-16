@@ -9,7 +9,7 @@ Depending on the specific distribution, programs and software packages can be in
 /opt.
 ```
 
-One way to locate programs is to employ the which ``utility``. For example, to find out exactly where the diff program resides on the filesystem:
+One way to locate programs is to employ the ``which`` utility. For example, to find out exactly where the diff program resides on the filesystem:
 ```
 $ which diff
 /usr/bin/diff
