@@ -76,5 +76,21 @@ $ find /usr -type f -name test1
 Another good use of ``find`` is being able to run commands on the files that match your search criteria. To find and remove all files that end with .swp:
 ```
 $ find -name "*.swp" -exec rm {} ’;’
+$ find -name "*.swp" -ok rm {} \;
 ```
-The {} is a place holder that will be filled with all the file names that result from the find expression, and the preceding command will be run on each one individually. Note that you have to end the command with either ‘;’ or \; Both forms are fine. One can also use the -ok option which behaves the same as -exec except that find will prompt you for permission before executing the command. This makes it a good way to test your results before blindly executing any potentially dangerous commands.
+The {} is a place holder that will be filled with all the file names that result from the find expression, and the preceding command will be run on each one individually. Note that you have to end the command with either ``‘;’`` or ``\;`` Both forms are fine. The second form behaves the same as the first one except that find will prompt you for permission before executing the command. This makes it a good way to test your results before blindly executing any potentially dangerous commands.
+
+It is sometimes the case that you wish to find files according to attributes such as when they were created, last used, etc, or based on their size. Both are easy to accomplish.
+
+Finding based on time:
+```
+$ find / -ctime 3
+```
+
+Here, _-ctime_ is when the inode meta-data (i.e., file ownership, permissions, etc) last changed; it is often, but not necessarily when the file was first created. You can also search for accessed/last read _-atime_ or modified/last written _-mtime_ times. The number is the number of days and can be expressed as either a number (n) that means exactly that value, +n which means greater than that number, or -n which means less than that number.
+
+Finding based on sizes:
+```
+$ find / -size +10M
+```
+To find files greater than 10 MB in size.
