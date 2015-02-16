@@ -65,6 +65,21 @@ The -i option prints out in the first column the i-node number, which is a uniqu
 134415251 -rw-r--r--. 3 root root 604 Feb 16 11:49 file2.txt
 134415251 -rw-r--r--. 3 root root 604 Feb 16 11:49 file3.txt
 ```
+Changing the file3.txt means change the same object as named as file1.txt, file2.txt and file3.txt.
 
+Symbolic or Soft links are created with the -s option as in:
 
+```
+# ln -s file1.txt file4.txt
+# ls -li file*
+134415251 -rw-r--r--. 3 root root 644 Feb 16 11:59 file1.txt
+134415251 -rw-r--r--. 3 root root 644 Feb 16 11:59 file2.txt
+134415251 -rw-r--r--. 3 root root 644 Feb 16 11:59 file3.txt
+134415252 lrwxrwxrwx. 1 root root   9 Feb 16 11:59 file4.txt -> file1.txt
+```
+Notice file4.txt no longer appears to be a regular file, and it clearly points to file1 and has a different inode number. Symbolic links take no extra space on the filesystem. They are extremely convenient as they can easily be modified to point to different places. An easy way to create a shortcut from your home directory to long pathnames is to create a symbolic link.
+
+Unlike hard links, soft links can point to objects even on different filesystems (or partitions) which may or may not be currently available or even exist. In the case where the link does not point to a currently available or existing object, you obtain a dangling link.
+
+Hard links are very useful and they save space, but you have to be careful with their use, sometimes in subtle ways. For one thing if you remove either file1.txt or file2.txt in the example, the inode object will remain, which might be undesirable as it may lead to subtle errors later if you recreate a file of that name. If you edit one of the files, exactly what happens depends on your editor; most editors including vi and gedit will retain the link by default but it is possible that modifying one of the names may break the link and result in the creation of two objects.
 
