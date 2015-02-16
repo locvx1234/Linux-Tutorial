@@ -2,6 +2,7 @@
 The core parts of a Linux distribution and most of its add-on software are installed via the Package Management System. Each package contains the files and other instructions needed to make one software component work on the system. Packages can depend on each other. There are two broad families of package managers: those based on **dpkg** and those which use **rpm** as their low-level package manager. The two systems are incompatible, but provide the same features at a broad level.
 
 **Package Management Systems**
+
 |High Level Tool|Low Level Tool|Family|
 |---------------|--------------|------|
 |``apt-get``|``dpkg``|Debian|
