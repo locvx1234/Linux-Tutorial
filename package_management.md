@@ -3,9 +3,9 @@ The core parts of a Linux distribution and most of its add-on software are insta
 
 **Package Management Systems**
 
-1. ``dpkg``
+* ``dpkg``
   * ``apt-get`` (systems based on **Debian**)
-2. ``rpm``
+* ``rpm``
   * ``zypper`` (systems based on **SUSE**)
   * ``yum`` (systems based on **RedHat**)
 
@@ -14,8 +14,7 @@ Both package management systems provide two tool levels: a low-level tool (such 
 |Operation|RPM|Debian|
 |---------|-----------|-----------|
 |Install a package|rpm –i foo.rpm|dpkg --install foo.deb|
-|Install a package with dependencies from
-repository|yum install foo|apt-get install foo|
+|Install a package with dependencies from repository|yum install foo|apt-get install foo|
 |Remove a package|rpm –e foo.rpm|dpkg --remove foo.deb|
 |Remove a package and dependencies using repository|yum remove foo|apt-get remove foo|
 |Update package to a newer version|rpm –U foo.rpm|dpkg --install foo.deb|
