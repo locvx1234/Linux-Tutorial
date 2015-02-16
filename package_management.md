@@ -25,5 +25,3 @@ Both package management systems provide two tool levels: a low-level tool (such 
 |Show available package with "foo" in name|yum list foo|apt-cache search foo|
 |Show all available packages|yum list|apt-cache dumpavail|
 |Show packages a file belong to|rpm –qf file|dpkg --search file|
-
-
