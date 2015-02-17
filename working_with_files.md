@@ -1,4 +1,4 @@
-###Standard File Streams
+###The file streams
 When commands are executed, by default there are three standard file streams or descriptors always open for use:
 
 1. standard input or **stdin**
