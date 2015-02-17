@@ -66,8 +66,32 @@ The ``/var`` directory may be put in its own partition so that growth of the fil
 ###The system configuration directory
 The ``/etc`` directory is the home for system configuration files. It contains no binary programs, although there are some executable scripts. For example, the file ``resolv.conf`` tells the system where to go on the network to obtain host name to IP address mappings (DNS). Files like ``passwd``, ``shadow`` and ``group`` for managing user accounts are found in the ``/etc`` directory. System run level scripts are found in subdirectories of ``/etc``. For example, ``/etc/rc2.d`` contains links to scripts for entering and leaving run level 2. Some Linux distributions extend the contents of ``/etc``. For example, **Red Hat** adds the ``/etc/sysconfig`` subdirectory that contains more configuration files.
 
+###The boot directory
+The ``/boot`` directory contains the few essential files needed to boot the system. For every alternative kernel installed on the system there are four files:
 
+* ``vmlinuz`` is the compressed Linux kernel, required for booting
+* ``initramfs`` is the initial ram filesystem, required for booting
+* ``config is`` the kernel configuration file, only used for debugging
+* ``System.map`` contains the kernel symbol table, only used for debugging
 
+Each of these files has a kernel version appended to its name.
 
+###The libraries directory
+The ``/lib`` contains libraries (common code shared by applications and needed for them to run) for the essential programs in ``/bin`` and ``/sbin`` folders. Most of these are what are known as dynamically loaded libraries (also known as shared libraries or Shared Objects (SO)). On some Linux distributions there exists a ``/lib64`` directory containing 64-bit libraries, while ``/lib`` contains 32-bit versions. Kernel modules (kernel code, often device drivers, that can be loaded and unloaded without re-starting the system) are located in ``/lib/modules/``.
 
+###Additional directories
 
+|Directory|Usage|
+|---------|-----|
+| /opt | Optional application software packages |
+| /sys | Virtual pseudo-filesystem giving information about the system and the hardware. Can be used to alter system parameters and for debugging purposes. |
+| /srv | Site-specific data served up by the system. Seldom used. |
+| /tmp | Temporary files; on some distributions these files are erased across a reboot |
+| /media | It is typically located where removable media, such as CDs, DVDs and USB drives are mounted. Unless configuration prohibits it, Linux automatically mounts the removable media in this directory when they are detected. |
+| /usr | Multi-user applications, utilities and data |
+| /usr/include | Header files used to compile applications |
+| /usr/lib | Libraries for binary programs |
+| /usr/lib64 | 64bit Libraries for binary programs |
+| /usr/share | Shared data used by applications, generally architecture-independent |
+| /usr/src | Source code, usually for the Linux kernel |
+| /usr/local | Data and programs specific to the local machine. |
