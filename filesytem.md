@@ -80,3 +80,4 @@ On the client machine mount the shared folder to a local folder
 # cd /mnt/nfs
 # touch filename.txt
 ```
+**Note**: this is only for explanation. Please, do not use it in production systems. Check the NFS resources related to your distribution.
