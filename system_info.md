@@ -23,7 +23,6 @@ Kernel version
 3.10.0-123.13.2.el7.x86_64
 ```
 Memory Info
-
 ```
 # head /proc/meminfo
 MemTotal:        3776748 kB
@@ -55,11 +54,26 @@ Count the number of CPU
       2 model name      : Intel(R) Core(TM)2 Duo CPU     E8500  @ 3.16GHz
 ```
 
-Hostname
+###The proc Filesystem
+The ``/proc`` filesystem contains virtual files that exist only in memory. This filesystem contains files and directories that mimic kernel structures and configuration information. It doesn't contain real files but runtime system information (e.g. system memory, devices mounted, hardware configuration, etc). Some important files in ``/proc`` are:
+
+```
+/proc/cpuinfo
+/proc/interrupts
+/proc/meminfo
+/proc/mounts
+/proc/partitions
+/proc/version
+/proc/<process-id-#>
+/proc/sys
+```
+The ``/proc`` filesystem is very useful because the information it reports is gathered only as needed and never needs storage on disk.
+
+###Hostname
+The hostname identifies the machine within the domain.
 ```
 # cat /etc/hostname
 ```
-
 Set a new host name
 ```
 # hostname NEW_NAME
