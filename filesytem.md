@@ -36,3 +36,20 @@ tmpfs                      tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
 /dev/sda1                  xfs       497M  167M  331M  34% /boot
 /dev/mapper/os-data        xfs        20G  261M   20G   2% /data
 ```
+
+###The home directories
+In any UNIX system, each user has his own home directory, usually placed under ``/home``. The ``/root`` directory on modern Linux systems is no more than the root user's home directory. The ``/home`` directory is often mounted as a separate filesystem on its own partition, or even exported remotely on a network through NFS.
+
+###The binary directories
+The ``/bin`` directory contains executable binaries, essential commands used in single-user mode, and essential commands required by all system users, such as ``ps``, ``ls``, ``cp``. Commands that are not essential for the system in single-user mode are placed in the ``/usr/bin`` directory, while the ``/sbin`` directory is used for essential binaries related to system administration, such as ``ifconfig`` and ``shutdown``. There is also a ``/usr/sbin`` directory for less essential system administration programs. All the binary directories are under the root partition. Sometimes ``/usr`` is a separate filesystem that may not be available in single-user mode. This was why essential commands were separated from non-essential commands. However, in some of the most modern Linux systems this distinction is considered obsolete, and ``/usr/bin`` and ``/bin`` are actually just linked together as are ``/usr/sbin`` and ``/sbin``.
+
+###The device directory
+The ``/dev`` directory contains device nodes, a type of pseudo-file used by most hardware and software devices, except for network devices. This directory is empty on the disk partition when it is not mounted but it contains entries which are created by the ``udev`` system, which creates and manages device nodes on Linux, creating them dynamically when devices are found. The ``/dev`` directory contains items such as:
+
+```
+/dev/sda1
+/dev/lp1
+/dev/dvd1
+```
+
+
