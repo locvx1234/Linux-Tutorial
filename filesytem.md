@@ -45,11 +45,29 @@ The ``/bin`` directory contains executable binaries, essential commands used in 
 
 ###The device directory
 The ``/dev`` directory contains device nodes, a type of pseudo-file used by most hardware and software devices, except for network devices. This directory is empty on the disk partition when it is not mounted but it contains entries which are created by the ``udev`` system, which creates and manages device nodes on Linux, creating them dynamically when devices are found. The ``/dev`` directory contains items such as:
-
 ```
 /dev/sda1
 /dev/lp1
 /dev/dvd1
 ```
+
+###The variable directory
+The ``/var`` directory contains files that are expected to change in size and content as the system is running (var stands for variable) such as the entries in the following directories:
+
+* System log files: ``/var/log``
+* Packages files: ``/var/lib``
+* Print queues: ``/var/spool``
+* Temp files: ``/var/tmp``
+* FTP home directory: ``/var/ftp``
+* Web Server directory: ``/var/www``
+
+The ``/var`` directory may be put in its own partition so that growth of the files can be accommodated and the file sizes do not fatally affect the system.
+
+###The system configuration directory
+The ``/etc`` directory is the home for system configuration files. It contains no binary programs, although there are some executable scripts. For example, the file ``resolv.conf`` tells the system where to go on the network to obtain host name to IP address mappings (DNS). Files like ``passwd``, ``shadow`` and ``group`` for managing user accounts are found in the ``/etc`` directory. System run level scripts are found in subdirectories of ``/etc``. For example, ``/etc/rc2.d`` contains links to scripts for entering and leaving run level 2. Some Linux distributions extend the contents of ``/etc``. For example, **Red Hat** adds the ``/etc/sysconfig`` subdirectory that contains more configuration files.
+
+
+
+
 
 
