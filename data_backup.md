@@ -17,4 +17,20 @@ File data is often compressed to save disk space and reduce the time it takes to
 |xz     |The most space efficient compression utility used in Linux|
 |zip    |Is often required to examine and decompress archives from other operating systems|
 
+These techniques vary in the efficiency of the compression (how much space is saved) and in how long they take to compress; generally the more efficient techniques take longer. Decompression time doesn't vary as much across different methods.
+
+Some common usage
+
+|Command|Usage|
+|-------|-----------|
+|||
+|||
+|||
+|||
+|||
+|||
+
+
+
+
 
