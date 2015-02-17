@@ -134,3 +134,48 @@ rmdir: failed to remove ‘test’: Directory not empty
 ls: cannot access ./test: No such file or directory
 ```
 
+###Compare files
+The ``diff`` command is used to compare files and directories. 
+
+```
+$ cat file1.txt
+Amor, ch'a nullo amato amar perdona,
+Mi prese del costui piacer si forte,
+Che, come vedi, ancor non m'abbandona.
+$ 
+$  cat file2.txt
+amor, ch'a nullo amato amar perdona,
+mi prese del costui piacer si forte,
+che, come vedi, ancor non m'abbandona.
+$ 
+$ diff  file1.txt file2.txt
+< Amor, ch'a nullo amato amar perdona,
+< Mi prese del costui piacer si forte,
+< Che, come vedi, ancor non m'abbandona.
+---
+> amor, ch'a nullo amato amar perdona,
+> mi prese del costui piacer si forte,
+> che, come vedi, ancor non m'abbandona.
+$ 
+$ diff -c file1.txt file2.txt
+*** file1.txt   2015-02-17 16:10:03.781804799 +0100
+--- file2.txt   2015-02-17 16:13:41.059088459 +0100
+***************
+! Amor, ch'a nullo amato amar perdona,
+! Mi prese del costui piacer si forte,
+! Che, come vedi, ancor non m'abbandona.
+--- 1,3 ----
+! amor, ch'a nullo amato amar perdona,
+! mi prese del costui piacer si forte,
+! che, come vedi, ancor non m'abbandona.
+$ 
+$  diff -i file1.txt file2.txt
+$ 
+```
+###The file utility
+In Linux, a file's extension often does not categorize it the way it might in other operating systems. One can not assume that a file named ``file.txt`` is a text file and not an executable program. In Linux a file name is generally more meaningful to the user of the system than the system itself; in fact most applications directly examine a file's contents to see what kind of object it is rather than relying on an extension. The real nature of a file can be ascertained by using the ``file`` utility. For the file names given as arguments, it examines the contents and certain characteristics to determine whether the files are plain text, shared libraries, executable programs, scripts, or something else.
+
+```
+$ file /etc/resolv.conf
+/etc/resolv.conf: ASCII text
+```
