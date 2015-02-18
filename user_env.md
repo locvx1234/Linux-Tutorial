@@ -151,3 +151,12 @@ root@caldera01:~$
 root@caldera01:~$ export PS1='\d-\u@\h:\w$ '
 Wed Feb 18-root@caldera01:~$
 ```
+The **SHELL** environment variable points to the user's default command shell (the program that is handling whatever you type in a command window, usually bash) and contains the full pathname to the shell
+```
+$ echo $SHELL
+/bin/bash
+$
+```
+
+###Command history
+The bash keeps track of previously entered commands and statements in a history buffer; you can recall previously used commands simply by using the Up and Down cursor keys. To view the list of previously executed commands, you can use the ``history`` at the command line. The list of commands is displayed with the most recent command appearing last in the list. This information is stored in ``~/.bash_history`` file.
