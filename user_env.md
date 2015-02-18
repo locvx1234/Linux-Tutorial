@@ -159,4 +159,36 @@ $
 ```
 
 ###Command history
-The bash keeps track of previously entered commands and statements in a history buffer; you can recall previously used commands simply by using the Up and Down cursor keys. To view the list of previously executed commands, you can use the ``history`` at the command line. The list of commands is displayed with the most recent command appearing last in the list. This information is stored in ``~/.bash_history`` file.
+The bash keeps track of previously entered commands and statements in a history buffer; you can recall previously used commands simply by using the Up and Down cursor keys. To view the list of previously executed commands, you can use the ``history`` at the command line. The list of commands is displayed with the most recent command appearing last in the list. This information is stored in ``~/.bash_history`` file. Several associated environment variables can be used to get information about the history file. 
+
+|Variable|Usage|
+|--------|-----|
+|HISTFILE|stores the location of the history file|
+|HISTFILESIZE|stores the maximum number of lines in the history file|
+|HISTSIZE|stores the maximum number of lines in the history file for the current session|
+
+The table below shows the syntax used to execute previously used commands
+
+|Syntax|Usage|
+|------|-----|
+|!!|Execute the previous command|
+|!|Start a history substitution|
+|!$|Refer to the last argument in a line|
+|!n|Refer to the n-th command line|
+|!string|Refer to the most recent command starting with string|
+
+###Creating Aliases
+Customized commands can be created to modify the behavior of already existing ones by creating aliases. Most often these aliases are placed in your ``~/.bashrc`` file so they are available to any command shells you create. The ``alias`` command with no arguments will list currently defined aliases.
+
+```
+$ alias
+alias cp='cp -i'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias grep='grep --color=auto'
+alias l.='ls -d .* --color=auto'
+alias ll='ls -l --color=auto'
+alias ls='ls --color=auto'
+alias mv='mv -i'
+alias rm='rm -i'
+```
