@@ -56,6 +56,14 @@ uid=0(root) gid=0(root) groups=0(root)
 # id adriano
 uid=1000(adriano) gid=1000(adriano) groups=1000(adriano)
 ```
+Use the ``passwd`` command to change the password for the new user
+```
+# passwd adriano
+Changing password for user adriano.
+New password:
+Retype new password:
+passwd: all authentication tokens updated successfully.
+```
 
 Adding a new group is done with the ``groupadd`` command and removed with the ``groupdel`` command.
 ```
@@ -82,3 +90,27 @@ adriano : newgoupname
 ```
 
 ###The root user
+The **root** account is very powerful and has full access to the system. Other operating systems often call this the administrator account; in Linux it is often called the **superuser** account. You must be extremely cautious before granting full root access to a user; it is rarely if ever justified. External attacks often consist of tricks used to elevate to the root account. However, you can use the sudo feature to assign more limited privileges to standard user accounts:
+
+1. on only a temporary basis.
+2. only for a specific subset of commands.
+
+When assigning elevated privileges, you can use the command ``su`` (switch user) to launch a new shell running as another user (you must type the password of the user you are becoming). Most often this other user is root, and the new shell allows the use of elevated privileges until it is exited. It is almost always a bad (dangerous for both security and stability) practice to use ``su`` to become root. Resulting errors can include deletion of vital files from the system and security breaches.
+
+###Startup Files
+In Linux, the command shell program, generally **bash** uses one or more startup files to configure the environment. Files in the ``/etc`` directory define global settings for all users while the initialization files in the user's home directory can include and or override the global settings. The startup files can do anything the user would like to do in every command shell, such as:
+
+* Customizing the user's prompt
+* Defining command-line shortcuts and aliases
+* Setting the default text editor
+* Setting the path for where to find executable programs
+
+When you first login to Linux, the  ``/etc/profile`` file is read and evaluated, after which the following files are searched in the listed order:
+
+1. ``~/.bash_profile``
+2. ``~/.bash_login``
+3. ``~/.profile``
+
+The Linux login shell evaluates whatever startup file that it comes across first and ignores the rest. This means that if it finds ``~/.bash_profile``, it ignores the rest. Different distributions may use different startup files. However, every time you create a new shell, or terminal window, etc., you do not perform a full system login; only the ``~/.bashrc`` file is read and evaluated. Although this file is not read and evaluated along with the login shell, most distributions and/or users include the ``~/.bashrc`` file from within one of the three user-owned startup files. In the Ubuntu, openSuse, and CentOS distros, the user must make appropriate changes in the ``~/.bash_profile`` file to include the ``~/.bashrc`` file. The ``~/.bash_profile`` will have certain extra lines, which in turn will collect the required customization parameters from ``~/.bashrc``.
+
+
