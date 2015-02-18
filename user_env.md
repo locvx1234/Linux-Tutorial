@@ -49,3 +49,11 @@ However, this will leave the home directory intact. This might be useful if it i
 # ls -lrta /home/adriano/
 ls: cannot access /home/adriano/: No such file or directory
 ```
+The command ``id`` with no argument gives information about the current user. If given the name of another user as an argument, id will report information about that other user.
+
+```
+# id
+uid=0(root) gid=0(root) groups=0(root)
+# id adriano
+uid=1000(adriano) gid=1000(adriano) groups=1000(adriano)
+```
