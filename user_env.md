@@ -50,10 +50,35 @@ However, this will leave the home directory intact. This might be useful if it i
 ls: cannot access /home/adriano/: No such file or directory
 ```
 The command ``id`` with no argument gives information about the current user. If given the name of another user as an argument, id will report information about that other user.
-
 ```
 # id
 uid=0(root) gid=0(root) groups=0(root)
 # id adriano
 uid=1000(adriano) gid=1000(adriano) groups=1000(adriano)
 ```
+
+Adding a new group is done with the ``groupadd`` command and removed with the ``groupdel`` command.
+```
+# groupadd newgroup
+# groupdel newgroup
+```
+Adding a user to an already existing group is done with the ``usermod`` command. Removing a user from the group is a somewhat trickier.
+
+```
+# groupadd newgroup
+# usermod -G newgroup adriano
+# groups adriano
+adriano : adriano newgroup
+# usermod -g newgroup adriano
+# groups adriano
+adriano : newgroup
+#
+```
+All these commands update the ``/etc/group`` as necessary. The ``groupmod`` command can be used to change the group properties such as the Group ID or the name
+```
+# groupmod newgroup -n newgoupname
+# groups adriano
+adriano : newgoupname
+```
+
+###The root user
