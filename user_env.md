@@ -119,9 +119,35 @@ The environment variables are simply named quantities that have specific values 
 By default, variables created within a script are only available to the current shell. All the child processes (sub-shells) will not have access to values that have been set or modified. Allowing child processes to see the values, requires use of the ``export`` command.
 
 |Task|Command|
-|-------|----|
+|----|-------|
 |Show the value of a specific variable|echo $SHELL|
 |Export a new variable value|export VAR=value|
 |Add a variable permanently|Add the line export VAR=value to ~/.bashrc|
 
+The **HOME** is an environment variable that represents the home or login directory of the user. The ``cd`` command without arguments will change the current working directory to the value of HOME. Note the tilde character (~) is often used as an abbreviation for $HOME.
 
+The **PATH** environment variable is an ordered list of directories which is scanned when a command is given to find the appropriate program or script to run. Each directory in the path is separated by colons. An empty directory name indicates the current directory at any given time.
+
+```
+$ export PATH=$HOME/bin:$PATH
+$ echo $PATH
+/home/me/bin:/usr/local/bin:/usr/bin:/bin/usr
+```
+
+The **PS** environment variable (Prompt Statement) is used to customize your prompt string in your terminal windows to display the information you want. PS1 is the primary prompt variable which controls what your command line prompt looks like. The following special characters can be included in PS1 :
+
+|Character|Usage|
+|---------|-----|
+|\u|User name| 
+|\h|Host name|
+|\w|Current working directory| 
+|\!|History number of this command|
+|\d|Date|
+
+They must be surrounded in single quotes when they are used
+```
+# export PS1='\u@\h:\w$ '
+root@caldera01:~$
+root@caldera01:~$ export PS1='\d-\u@\h:\w$ '
+Wed Feb 18-root@caldera01:~$
+```
