@@ -113,4 +113,15 @@ When you first login to Linux, the  ``/etc/profile`` file is read and evaluated,
 
 The Linux login shell evaluates whatever startup file that it comes across first and ignores the rest. This means that if it finds ``~/.bash_profile``, it ignores the rest. Different distributions may use different startup files. However, every time you create a new shell, or terminal window, etc., you do not perform a full system login; only the ``~/.bashrc`` file is read and evaluated. Although this file is not read and evaluated along with the login shell, most distributions and/or users include the ``~/.bashrc`` file from within one of the three user-owned startup files. In the Ubuntu, openSuse, and CentOS distros, the user must make appropriate changes in the ``~/.bash_profile`` file to include the ``~/.bashrc`` file. The ``~/.bash_profile`` will have certain extra lines, which in turn will collect the required customization parameters from ``~/.bashrc``.
 
+###Environment variables
+The environment variables are simply named quantities that have specific values and are understood by the command shell, such as **bash**. Some of these are pre-set by the system, and others are set by the user either at the command line or within startup and other scripts. An environment variable is actually no more than a character string that contains information used by one or more applications. There are a number of ways to view the values of currently set environment variables. All the ``set``, ``env``, or ``export`` commands display the environment variables.
+
+By default, variables created within a script are only available to the current shell. All the child processes (sub-shells) will not have access to values that have been set or modified. Allowing child processes to see the values, requires use of the ``export`` command.
+
+|Task|Command|
+|-------|----|
+|Show the value of a specific variable|echo $SHELL|
+|Export a new variable value|export VAR=value|
+|Add a variable permanently|Add the line export VAR=value to ~/.bashrc|
+
 
