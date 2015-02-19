@@ -37,3 +37,11 @@ $ chmod 755 test1
 $ ls -l test1
 -rwxr-xr-x 1 joy caldera 1601 Mar 9 15:04 test1
 ```
+The group ownership is changed by using the ``chgrp`` command
+```
+# ll /home/mina/myfile.txt
+-rw-rw-r--. 1 mina caldera 679 Feb 19 16:51 /home/mina/myfile.txt
+# chgrp root /home/mina/myfile.txt
+# ll /home/mina/myfile.txt
+-rw-rw-r--. 1 mina root 679 Feb 19 16:51 /home/mina/myfile.txt
+```
