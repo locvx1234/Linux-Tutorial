@@ -39,3 +39,15 @@ When using the ``sudo`` command:
 
 ###The sudo command
 Granting privileges using the ``sudo`` command is less dangerous than ``su`` and it should be preferred. By default, ``sudo`` must be enabled on a per-user basis. However, some distributions (such as Ubuntu) enable it by default for at least one main user, or give this as an installation option. To execute just one command with root privilege type ``sudo <command>``. When the command is complete you will return to being a normal unprivileged user. The ``sudo`` configuration files are stored in the ``/etc/sudoers`` file and in the ``/etc/sudoers.d/`` directory. By default, that directory is empty.
+
+The ``sudo`` command has the ability to keep track of unsuccessful attempts at gaining root access. An authentication failure message would appear in the ``/var/log/secure`` log file  when trying to execute sudo bash without successfully authenticating the user
+
+```
+# tail /var/log/secure
+authentication failure; logname=op uid=0 euid=0 tty=/dev/pts/6 ruser=op rhost= user=op
+conversation failed
+auth could not identify password for [op]
+op : 1 incorrect password attempt ;
+TTY=pts/6 ; PWD=/var/log ; USER=root ; COMMAND=/bin/bash
+```
+
