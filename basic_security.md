@@ -81,3 +81,26 @@ root
 If sudo is configured correctly the last line value will be ``root``.
 
 Some Linux distributions prefer you add a file in the directory ``/etc/sudoers.d`` with a name the same as the user. This file contains the individual user's sudo configuration, and one should leave the master configuration file untouched except for changes that affect all users.
+
+###The process isolation
+Linux is considered to be more secure than many other operating systems because processes are naturally isolated from each other. One process normally cannot access the resources of another process, even when that process is running with the same user privileges. Additional security mechanisms that have been recently introduced in order to make risks even smaller are:
+
+1. **Control Groups**: allows system administrators to group processes and associate finite resources to each group (**cgroup**).
+2. **Linux Containers**: makes it possible to run multiple isolated Linux systems containers on a single system by relying on **cgroups**.
+3. **Virtualization**: hardware is emulated in such a way that not only processes can be isolated, but entire systems are run simultaneously as isolated and insulated guests (**virtual machines**) on one physical host.
+
+###Password encryption
+Protecting passwords has become a crucial element of security. Most Linux distributions rely on a modern password encryption algorithm called SHA-512 (Secure Hashing Algorithm 512 bits), developed by the U.S. National Security Agency (NSA) to encrypt passwords. The SHA-512 algorithm is widely used for security applications and protocols. These security applications and protocols include TLS, SSL, PHP, SSH, S/MIME and IPSec. SHA-512 is one of the most tested hashing algorithms.
+
+###Password aging
+The password aging is a method to ensure that users get prompts that remind them to create a new password after a specific period. This can ensure that passwords, if cracked, will only be usable for a limited amount of time. This feature is implemented using the ``chage`` command, which configures the password expiry information for a user.
+```
+# chage --list adriano
+Last password change                                    : Feb 18, 2015
+Password expires                                        : never
+Password inactive                                       : never
+Account expires                                         : never
+Minimum number of days between password change          : 0
+Maximum number of days between password change          : 99999
+Number of days of warning before password expires       : 7
+```
