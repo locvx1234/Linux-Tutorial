@@ -3,11 +3,11 @@ A **process** is simply an instance of one or more related tasks (**threads**) e
 
 A terminal window, is a process that runs as long as needed. It allows users to execute programs and access resources in an interactive environment. You can also run programs in the background, which means they become detached from the shell. Processes can be of different types according to the task being performed. 
 
-|Variable|Usage|Usage|
-|--------|-----|-----|
-|||
-|||
-|||
-|||
-|||
-|||
+|Type|Description|Example|
+|--------|---------|-----|
+|Interactive |Need to be started by a user, either at a command line or through a graphical interface such as an icon or a menu selection.|bash, firefox, top|
+|Batch |Automatic processes which are scheduled from and then disconnected from the terminal. These tasks are queued and work on a FIFO (First In, First Out) basis.|updatedb|
+|Daemons|Server processes that run continuously. Many are launched during system startup and then wait for a user or system request indicating that their service is required.|httpd, xinetd, sshd|
+|Threads|Lightweight processes. These are tasks that run under the umbrella of a main process, sharing memory and other resources, but are scheduled and run by the system on an individual basis.|firefox|
+|Kernel Threads|Kernel tasks that users neither start nor terminate and have little control over. These may perform actions like moving a thread from one CPU to another, or making sure input/output operations to disk are completed.|kswapd0, migration, ksoftirqd|
+
