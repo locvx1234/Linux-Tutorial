@@ -3,13 +3,13 @@ A **process** is simply an instance of one or more related tasks (**threads**) e
 
 A terminal window, is a process that runs as long as needed. It allows users to execute programs and access resources in an interactive environment. You can also run programs in the background, which means they become detached from the shell. Processes can be of different types according to the task being performed. 
 
-|Type|Description|Example|
-|--------|---------|-----|
-|Interactive |Need to be started by a user, either at a command line or through a graphical interface such as an icon or a menu selection.|bash, firefox, top|
-|Batch |Automatic processes which are scheduled from and then disconnected from the terminal. These tasks are queued and work on a FIFO (First In, First Out) basis.|updatedb|
-|Daemons|Server processes that run continuously. Many are launched during system startup and then wait for a user or system request indicating that their service is required.|httpd, xinetd, sshd|
-|Threads|Lightweight processes. These are tasks that run under the umbrella of a main process, sharing memory and other resources, but are scheduled and run by the system on an individual basis.|firefox|
-|Kernel Threads|Kernel tasks that users neither start nor terminate and have little control over. These may perform actions like moving a thread from one CPU to another, or making sure input/output operations to disk are completed.|kswapd0, migration, ksoftirqd|
+|Type|Description|
+|--------|---------|
+|Interactive |Need to be started by a user, either at a command line or through a graphical interface such as an icon or a menu selection.|
+|Batch |Automatic processes which are scheduled from and then disconnected from the terminal. These tasks are queued and work on a FIFO (First In, First Out) basis.|
+|Daemons|Server processes that run continuously. Many are launched during system startup and then wait for a user or system request indicating that their service is required.|
+|Threads|Lightweight processes. These are tasks that run under the umbrella of a main process, sharing memory and other resources, but are scheduled and run by the system on an individual basis.|
+|Kernel Threads|Kernel tasks that users neither start nor terminate and have little control over. These may perform actions like moving a thread from one CPU to another, or making sure input/output operations to disk are completed.|
 
 When a process is in the **running state**, it means it is either currently executing instructions on a CPU, or is waiting for a share (or time slice) so it can run. A critical kernel routine called the **scheduler** constantly shifts processes in and out of the CPU, sharing time according to relative priority, how much time is needed and how much has already been granted to a task. All processes in this state reside on a run queue and on a computer with multiple CPUs there is a run queue on each. Sometimes processes go into the **sleep** state, generally when they are waiting for something to happen before they can resume, perhaps for the user to type something. In this condition a process is sitting in a wait queue. There are some other less frequent process states, especially when a process is terminating. Sometimes a child process completes but its parent process has not asked about its state. Such a process is said to be in a **zombie** state; it is not really alive but still shows up in the system's list of processes.
 
