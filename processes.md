@@ -63,21 +63,30 @@ To terminate a process you can type ``kill -SIGKILL <pid>`` or ``kill -9 <pid>``
 
 While a static view of what the system is doing is useful, monitoring the system performance live over time is also valuable. One option would be to run the ``ps`` command at regular intervals. A better alternative is to use ``top`` to get constant real-time updates (every two seconds by default). The ``top`` command clearly highlights which processes are consuming the most CPU cycles and memory.
 ```
-top - 15:38:15 up 18 days,  6:19,  1 user,  load average: 0.00, 0.01, 0.05
-Tasks: 106 total,   1 running, 105 sleeping,   0 stopped,   0 zombie
-%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
-KiB Mem:   3801380 total,   460440 used,  3340940 free,     1444 buffers
-KiB Swap:  4079612 total,        0 used,  4079612 free.   281596 cached Mem
+top - 15:40:31 up 4 days,  2:13,  1 user,  load average: 0.77, 0.66, 0.45
+Tasks: 244 total,   2 running, 241 sleeping,   0 stopped,   1 zombie
+%Cpu(s):  6.5 us,  1.3 sy,  0.0 ni, 88.3 id,  3.7 wa,  0.0 hi,  0.2 si,  0.0 st
+KiB Mem:   3801380 total,  3642652 used,   158728 free,       24 buffers
+KiB Swap:  4079612 total,     3072 used,  4076540 free.   326620 cached Mem
 
   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
-    1 root      20   0   49884   6460   3724 S   0.0  0.2   0:04.41 systemd
-    2 root      20   0       0      0      0 S   0.0  0.0   0:00.05 kthreadd
-    3 root      20   0       0      0      0 S   0.0  0.0   0:00.74 ksoftirqd/0
-    5 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 kworker/0:0H
-    7 root      rt   0       0      0      0 S   0.0  0.0   0:00.03 migration/0
-    8 root      20   0       0      0      0 S   0.0  0.0   0:00.00 rcu_bh
+ 1367 glance    20   0  351800  54996   5928 S   1.3  1.4  64:32.28 glance-api
+ 1373 nova      20   0  383444  73304   6768 S   1.3  1.9  68:25.51 nova-api
+ 1365 keystone  20   0  353108  58340   6192 S   1.0  1.5  67:16.01 keystone-all
+ 1369 cinder    20   0  365404  60120   6632 S   1.0  1.6  68:38.74 cinder-api
+ 1371 cinder    20   0  287924  30584   4924 S   1.0  0.8  68:08.01 cinder-volume
+ 1380 nova      20   0  348120  46568   6580 S   1.0  1.2  68:19.02 nova-conductor
+ 1408 ceilome+  20   0  254312  20560   4260 R   1.0  0.5  64:28.69 ceilometer-agen
 ...
 ```
+The first line of the top output displays a quick summary of what is happening in the system including:
 
+1. How long the system has been up
+2. How many users are logged on
+3. What is the load average
 
+The load average determines how busy the system is. A load average of 1.00 per CPU indicates a fully subscribed, but not overloaded, system. If the load average goes above this value, it indicates that processes are competing for CPU time. If the load average is very high, it might indicate that the system is having a problem, such as a **runaway** process (a process in a non-responding state).
 
+The second line of the top output displays the total number of processes, the number of running, sleeping, stopped and zombie processes. Comparing the number of running processes with the load average helps determine if the system has reached its capacity or perhaps a particular user is running too many processes. The stopped processes should be examined to see if everything is running correctly.
+
+The third line of the top output indicates how the CPU time is being divided between the users (**us**) and the kernel (**sy**) by displaying the percentage of CPU time used for each. The percentage of user jobs running at a lower priority (**ni**) is then listed. Idle mode (**id**) should be low if the load average is high, and vice versa. The percentage of jobs waiting (**wa**) for I/O is listed. Interrupts include the percentage of hardware (**hi**) vs. software interrupts (**si**). Steal time (**st**) is generally used with virtual machines, which has some of its idle CPU time taken for other uses.
