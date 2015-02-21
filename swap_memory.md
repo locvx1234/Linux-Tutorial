@@ -1,4 +1,4 @@
-###Linux swop memory
+###Linux swap memory
 Linux divide la RAM in aree di memoria chiamate pagine. Lo **swapping** è il processo mediante il quale una pagina di memoria viene copiata in uno spazio preconfigurato sul disco rigido, chiamato spazio di **swap**, per liberare dalla memoria. Le dimensioni combinate della memoria fisica e dello spazio di swap è la quantità di memoria virtuale disponibile. Lo swapping è necessario per due motivi importanti:
 
 1. In primo luogo, quando il sistema richiede più memoria di quella fisicamente disponibile, il kernel sposta le pagine meno utilizzate nello spazio di swap e concede l’utilizzo della memoria ram all’applicazione corrente (processo) che in quel momento richiede la memoria.
@@ -14,4 +14,4 @@ Filename                                Type            Size    Used    Priority
 /dev/dm-0                               partition       4079612 0       -1
 ```
 
-Ogni riga elenca una partizione di swap separata utilizzata dal sistema. Qui, il campo Type indica che questo spazio di swap è una partizione piuttosto che un file. Una grande particolarità dello swap su linux è che, se montare due (o più) spazi di swap (preferibilmente su due dispositivi differenti) con la stessa priorità, linux divide le sue attività di swapping tra di loro. Questo si traduce in un incremento notevole delle prestazioni. Per aggiungere una partizione di swap per il vostro sistema, è necessario prima di prepararla.
+Ogni riga elenca una partizione di swap separata utilizzata dal sistema. Una particolarità dello swap su linux è che, se montare due (o più) spazi di swap (preferibilmente su due dispositivi differenti) con la stessa priorità, linux divide le sue attività di swapping tra di loro. Questo si traduce in un incremento notevole delle prestazioni. Per aggiungere una partizione di swap per il vostro sistema, è necessario però prima di prepararla.
