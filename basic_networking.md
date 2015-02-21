@@ -40,5 +40,19 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 enp48s0
 169.254.0.0     0.0.0.0         255.255.0.0     U     1003   0        0 enp0s25
 172.25.101.0    0.0.0.0         255.255.255.0   U     0      0        0 enp48s0
+# 
+# route add 10.58.47.235 gw 172.25.101.1
+route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.10.10.1      0.0.0.0         UG    0      0        0 enp0s25
+10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 enp0s25
+10.58.47.235    172.25.101.1    255.255.255.255 UGH   0      0        0 enp48s0
+169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 enp48s0
+169.254.0.0     0.0.0.0         255.255.0.0     U     1003   0        0 enp0s25
+172.25.101.0    0.0.0.0         255.255.255.0   U     0      0        0 enp48s0
+# 
+# route delete 10.58.47.235 gw 172.25.101.1
 ```
+
 
