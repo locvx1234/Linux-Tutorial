@@ -29,6 +29,7 @@ The ``ip`` is a very powerful program that can do many things.
 # ip route show
 ```
 
+###Roting table
 The ``route`` command is used to view or change the IP routing table. You may want to change the IP routing table to add, delete or modify static routes to specific hosts or networks.
 
 ```
@@ -53,6 +54,15 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 172.25.101.0    0.0.0.0         255.255.255.0   U     0      0        0 enp48s0
 # 
 # route delete 10.58.47.235 gw 172.25.101.1
+# route add -net 10.0.0.0 netmask 255.0.0.0 gw 10.10.10.1 enp0s25
+# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         10.10.10.1      0.0.0.0         UG    0      0        0 enp0s25
+10.0.0.0        10.10.10.1      255.0.0.0       UG    0      0        0 enp0s25
+10.10.10.0      0.0.0.0         255.255.255.0   U     0      0        0 enp0s25
+169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 enp48s0
+169.254.0.0     0.0.0.0         255.255.0.0     U     1003   0        0 enp0s25
+172.25.101.0    0.0.0.0         255.255.255.0   U     0      0        0 enp48s0
+# route delete -net 10.0.0.0 netmask 255.0.0.0 gw 10.10.10.1 enp0s25
 ```
-
-
