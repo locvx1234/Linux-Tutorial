@@ -79,7 +79,7 @@ KiB Swap:  4079612 total,     3072 used,  4076540 free.   326620 cached Mem
  1408 ceilome+  20   0  254312  20560   4260 R   1.0  0.5  64:28.69 ceilometer-agen
 ...
 ```
-The first line of the top output displays a quick summary of what is happening in the system including:
+The first line of the ``top`` output displays a quick summary of what is happening in the system including:
 
 1. How long the system has been up
 2. How many users are logged on
@@ -87,6 +87,57 @@ The first line of the top output displays a quick summary of what is happening i
 
 The load average determines how busy the system is. A load average of 1.00 per CPU indicates a fully subscribed, but not overloaded, system. If the load average goes above this value, it indicates that processes are competing for CPU time. If the load average is very high, it might indicate that the system is having a problem, such as a **runaway** process (a process in a non-responding state).
 
-The second line of the top output displays the total number of processes, the number of running, sleeping, stopped and zombie processes. Comparing the number of running processes with the load average helps determine if the system has reached its capacity or perhaps a particular user is running too many processes. The stopped processes should be examined to see if everything is running correctly.
+The second line of the ``top`` output displays the total number of processes, the number of running, sleeping, stopped and zombie processes. Comparing the number of running processes with the load average helps determine if the system has reached its capacity or perhaps a particular user is running too many processes. The stopped processes should be examined to see if everything is running correctly.
 
-The third line of the top output indicates how the CPU time is being divided between the users (**us**) and the kernel (**sy**) by displaying the percentage of CPU time used for each. The percentage of user jobs running at a lower priority (**ni**) is then listed. Idle mode (**id**) should be low if the load average is high, and vice versa. The percentage of jobs waiting (**wa**) for I/O is listed. Interrupts include the percentage of hardware (**hi**) vs. software interrupts (**si**). Steal time (**st**) is generally used with virtual machines, which has some of its idle CPU time taken for other uses.
+The third line of the ``top`` output indicates how the CPU time is being divided between the users (**us**) and the kernel (**sy**) by displaying the percentage of CPU time used for each. The percentage of user jobs running at a lower priority (**ni**) is then listed. Idle mode (**id**) should be low if the load average is high, and vice versa. The percentage of jobs waiting (**wa**) for I/O is listed. Interrupts include the percentage of hardware (**hi**) vs. software interrupts (**si**). Steal time (**st**) is generally used with virtual machines, which has some of its idle CPU time taken for other uses.
+
+The fourth and fifth lines of the ``top`` output indicate memory usage, which is divided in two categories:
+
+1. Physical memory (RAM) – displayed on line 4.
+2. Swap space – displayed on line 5.
+3. Both categories display total memory, used memory, and free space.
+
+You need to monitor memory usage very carefully to ensure good system performance. Once the physical memory is exhausted, the system starts using swap space as an extended memory pool, and since accessing disk is much slower than accessing memory, this will negatively affect system performance. If the system starts using swap often, you can add more swap space. However, adding more physical memory should also be considered.
+
+Each line in the process list of the ``top`` output displays information about a process. By default, processes are ordered by highest CPU usage. The following information about each process is displayed:
+
+* Process Identification Number (PID)
+* Process owner (USER)
+* Priority (PR) and nice values (NI)
+* Virtual (VIRT), physical (RES), and shared memory (SHR)
+* Status (S)
+* Percentage of CPU (%CPU) and memory (%MEM) used
+* Execution time (TIME+)
+* Command (COMMAND)
+
+To control the healt of a system, the average load of the system should be checked first. Assuming our system is a single-CPU system, the 0.25 means that for the past minute, on average, the system has been 25% utilized. 0.12 in the next position means that over the past 5 minutes, on average, the system has been 12% utilized; and 0.15 in the final position means that over the past 15 minutes, on average, the system has been 15% utilized. If we saw a value of 1.00 in the second position, that would imply that the single-CPU system was 100% utilized, on average, over the past 5 minutes; this is good if we want to fully use a system. A value over 1.00 for a single-CPU system implies that the system was over-utilized: there were more processes needing CPU than CPU was available. If we had more than one CPU, say a quad-CPU system, we would divide the load average numbers by the number of CPUs. In this case, for example, seeing a 1 minute load average of 4.00 implies that the system as a whole was 100% (4.00/4) utilized during the last minute. Short term increases are usually not a problem. A high peak you see is likely a burst of activity, not a new level. For example, at start up, many processes start and then activity settles down. If a high peak is seen in the 5 and 15 minute load averages, it would may be cause for concern.
+
+###Background and foreground processes
+Linux supports **background** and **foreground** job processing. Foreground jobs run directly from the shell, and when one foreground job is running, other jobs need to wait for shell access until it is completed. This is fine when jobs complete quickly. But this can have an adverse effect if the current job is going to take a long time to complete. In such cases, you can run the job in the background and free the shell for other tasks. The background job will be executed at lower priority, which, in turn, will allow smooth execution of the interactive tasks, and you can type other commands in the terminal window while the background job is running. By default all jobs are executed in the foreground. This You can put a job in the background:
+
+```
+# updatedb &
+[1] 7437
+# jobs
+[1]+  Done                    updatedb
+#
+```
+
+###Scheduling processes
+The ``at`` utility program is used to execute any non-interactive command at a specified time. The ``at`` jobs is picked by the ``atd`` service.
+```
+# yum install -y at
+# systemctl start atd
+# systemctl enable atd
+# at now + 5 minutes
+at> pstree
+at> <EOT>
+job 9 at Sat Feb 21 16:28:00 2015
+```
+
+The ``atq`` command is used to list the scheduled jobs by the ``at`` command.
+```
+# atq
+9       Sat Feb 21 16:28:00 2015 a root
+```
+
