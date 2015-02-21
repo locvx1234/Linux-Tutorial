@@ -18,3 +18,18 @@ At any given time there are always multiple processes being executed. The operat
 Many users can access a system simultaneously, and each user can run multiple processes. The operating system identifies the user who starts the process by the Real User ID or **RUID** assigned to the user. The user who determines the access rights for the users is identified by the Effective UID or **EUID**. The **EUID** may or may not be the same as the **RUID**. Users can be categorized into various groups. Each group is identified by the **RGID**. The access rights of the group are determined by the **EGID**. Each user can be a member of one or more groups. Most of the time we ignore these details and just talk about the **UID**.
 
 At any given time, many processes are running on the system. However, a **CPU** can actually accommodate only one task at a time, just like a car can have only one driver at a time. Some processes are more important than others so Linux allows you to set and manipulate process priority. Higher priority processes are granted more time on the processor. The **priority** for a process can be set by specifying a nice value, or **niceness**, for the process. The lower the nice value, the higher the priority. Low values are assigned to important processes, while high values are assigned to processes that can wait longer. A process with a high nice value simply allows other processes to be executed first. In Linux, a nice value of -20 represents the highest priority and 19 represents the lowest. You can also assign a real-time priority to time-sensitive tasks, such as controlling machines or collecting incoming data. This is just a very high priority and is not to be confused with what is called hard real time which is conceptually different, and has more to do with making sure a job gets completed within a very well-defined time window.
+
+###Running processes
+The ``ps`` command provides information about currently running processes, keyed by **PID**. If you want a repetitive update of this status, you can use the ``top`` command or commonly installed variants such as ``htop`` or ``atop`` from the command line. The ``ps`` command has many options for specifying exactly which tasks to examine, what information to display about them, and precisely what output format should be used.
+
+Without options ``ps`` will display all processes running under the current shell. You can use the `` ps -u`` to display information of processes for a specified username. The command ``ps -ef`` displays all the processes in the system in full detail. The command ``ps -eLf`` goes one step further and displays one line of information for every thread (a process can contain multiple threads).
+
+```
+# ps -u adriano
+  PID TTY          TIME CMD
+  847 ?        00:00:00 sshd
+  848 pts/2    00:00:00 bash
+ 1070 ?        00:00:00 sshd
+ 1071 pts/3    00:00:00 bash
+ 6475 pts/3    00:00:00 top
+```
