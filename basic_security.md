@@ -56,4 +56,28 @@ Whenever the ``sudo`` command is invoked, a trigger will look at ``/etc/sudoers`
 The basic structure of an entry is:
 > who where = (as_whom) what
 
-Most Linux distributions now prefer you add a file in the directory ``/etc/sudoers.d`` with a name the same as the user. This file contains the individual user's sudo configuration, and one should leave the master configuration file untouched except for changes that affect all users.
+To create a normal user account and give it sudo access, login as root user and edit the ``/etc/sudoers`` file with the ``visudo`` command. Find the lines in the file that grant ``sudo`` access to users in the group ``wheel`` when enabled.
+```
+## Allows people in group wheel to run all commands
+# %wheel        ALL=(ALL)       ALL
+```
+Remove the comment character at the start of the second line. This enables the configuration option. Save your changes. Add the user you created to the ``wheel`` group.
+```
+# usermod -aG wheel adriano
+# su adriano -
+$ groups
+adriano wheel
+$ sudo whoami
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for adriano:
+root
+```
+If sudo is configured correctly the last line value will be ``root``.
+
+Some Linux distributions prefer you add a file in the directory ``/etc/sudoers.d`` with a name the same as the user. This file contains the individual user's sudo configuration, and one should leave the master configuration file untouched except for changes that affect all users.
