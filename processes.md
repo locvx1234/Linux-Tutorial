@@ -15,8 +15,6 @@ When a process is in the **running state**, it means it is either currently exec
 
 At any given time there are always multiple processes being executed. The operating system keeps track of them by assigning each a unique process ID or **PID** number. The PID is used to track process state, cpu usage, memory use, precisely where resources are located in memory, and other characteristics. New PIDs are usually assigned in ascending order as processes are born. Thus PID 1 denotes the **init** process (initialization process), and succeeding processes are gradually assigned higher numbers.
 
-Many users can access a system simultaneously, and each user can run multiple processes. The operating system identifies the user who starts the process by the Real User ID or **RUID** assigned to the user. The user who determines the access rights for the users is identified by the Effective UID or **EUID**. Users can be categorized into various groups. Each group is identified by the **RGID**. The access rights of the group are determined by the **EGID**. Each user can be a member of one or more groups. Most of the time we ignore these details and just talk about the **UID**.
-
 At any given time, many processes are running on the system. However, a **CPU** can actually accommodate only one task at a time, just like a car can have only one driver at a time. Some processes are more important than others so Linux allows you to set and manipulate process priority. Higher priority processes are granted more time on the processor. The **priority** for a process can be set by specifying a nice value, or **niceness**, for the process. The lower the nice value, the higher the priority. Low values are assigned to important processes, while high values are assigned to processes that can wait longer. A process with a high nice value simply allows other processes to be executed first. In Linux, a nice value of -20 represents the highest priority and 19 represents the lowest. You can also assign a real-time priority to time-sensitive tasks, such as controlling machines or collecting incoming data. This is just a very high priority and is not to be confused with what is called hard real time which is conceptually different, and has more to do with making sure a job gets completed within a very well-defined time window.
 
 ###Running processes
@@ -159,3 +157,19 @@ will schedule a job to execute the script every minute of every hour of every da
 30 08 10 06 * /home/sysadmin/full-backup
 ```
 will schedule a full-backup at 8.30am, 10-June irrespective of the day of the week.
+
+###Delaying processes
+Sometimes a command or job must be delayed or suspended. Suppose, for example, an application has read and processed the contents of a data file and then needs to save a report on a backup system. If the backup system is currently busy or not available, the application can be made to sleep until it can complete its work. Such a delay might be to mount the backup device and prepare it for writing. The ``sleep`` command suspends execution for at least the specified period of time, which can be given as the number of seconds (the default), minutes, hours or days. After that time has passed, the execution will resume.
+
+```
+# vi script.sh
+#!/bin/bash
+echo "The system will go to sleep fo 30 seconds ..."
+sleep 15
+echo "The system is awaked"
+# chmod u+x script.sh
+# ./script.sh
+The system will go to sleep fo 30 seconds ...
+The system is awaked
+#
+```
