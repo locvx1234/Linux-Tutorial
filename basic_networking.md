@@ -29,7 +29,7 @@ The ``ip`` is a very powerful program that can do many things.
 # ip route show
 ```
 
-###Roting table
+###Routing table
 The ``route`` command is used to view or change the IP routing table. You may want to change the IP routing table to add, delete or modify static routes to specific hosts or networks.
 
 ```
