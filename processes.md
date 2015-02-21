@@ -15,7 +15,7 @@ When a process is in the **running state**, it means it is either currently exec
 
 At any given time there are always multiple processes being executed. The operating system keeps track of them by assigning each a unique process ID or **PID** number. The PID is used to track process state, cpu usage, memory use, precisely where resources are located in memory, and other characteristics. New PIDs are usually assigned in ascending order as processes are born. Thus PID 1 denotes the **init** process (initialization process), and succeeding processes are gradually assigned higher numbers.
 
-Many users can access a system simultaneously, and each user can run multiple processes. The operating system identifies the user who starts the process by the Real User ID or **RUID** assigned to the user. The user who determines the access rights for the users is identified by the Effective UID or **EUID**. The **EUID** may or may not be the same as the **RUID**. Users can be categorized into various groups. Each group is identified by the **RGID**. The access rights of the group are determined by the **EGID**. Each user can be a member of one or more groups. Most of the time we ignore these details and just talk about the **UID**.
+Many users can access a system simultaneously, and each user can run multiple processes. The operating system identifies the user who starts the process by the Real User ID or **RUID** assigned to the user. The user who determines the access rights for the users is identified by the Effective UID or **EUID**. Users can be categorized into various groups. Each group is identified by the **RGID**. The access rights of the group are determined by the **EGID**. Each user can be a member of one or more groups. Most of the time we ignore these details and just talk about the **UID**.
 
 At any given time, many processes are running on the system. However, a **CPU** can actually accommodate only one task at a time, just like a car can have only one driver at a time. Some processes are more important than others so Linux allows you to set and manipulate process priority. Higher priority processes are granted more time on the processor. The **priority** for a process can be set by specifying a nice value, or **niceness**, for the process. The lower the nice value, the higher the priority. Low values are assigned to important processes, while high values are assigned to processes that can wait longer. A process with a high nice value simply allows other processes to be executed first. In Linux, a nice value of -20 represents the highest priority and 19 represents the lowest. You can also assign a real-time priority to time-sensitive tasks, such as controlling machines or collecting incoming data. This is just a very high priority and is not to be confused with what is called hard real time which is conceptually different, and has more to do with making sure a job gets completed within a very well-defined time window.
 
@@ -33,3 +33,51 @@ Without options ``ps`` will display all processes running under the current shel
  1071 pts/3    00:00:00 bash
  6475 pts/3    00:00:00 top
 ```
+
+The ``pstree`` command displays the processes running on the system in the form of a tree diagram showing the relationship between a process and its parent process and any other processes that it created. Repeated entries of a process are not displayed, and threads are displayed in curly braces.
+```
+# yum install -y psmisc
+# pstree
+# systemd─┬─agetty
+          ├─auditd───{auditd}
+          ├─avahi-daemon───avahi-daemon
+          ├─crond
+          ├─dbus-daemon───{dbus-daemon}
+          ├─firewalld───{firewalld}
+          ├─iprdump
+          ├─iprinit
+          ├─iprupdate
+          ├─lvmetad
+          ├─master─┬─pickup
+          │        └─qmgr
+          ├─polkitd───5*[{polkitd}]
+          ├─rsyslogd───2*[{rsyslogd}]
+          ├─sshd───sshd───bash───pstree
+          ├─systemd-journal
+          ├─systemd-logind
+          ├─systemd-udevd
+          └─tuned───4*[{tuned}]
+```
+
+To terminate a process you can type ``kill -SIGKILL <pid>`` or ``kill -9 <pid>``. Note however, you can only kill your own processes: those belonging to another user are off limits unless you are root.
+
+While a static view of what the system is doing is useful, monitoring the system performance live over time is also valuable. One option would be to run the ``ps`` command at regular intervals. A better alternative is to use ``top`` to get constant real-time updates (every two seconds by default). The ``top`` command clearly highlights which processes are consuming the most CPU cycles and memory.
+```
+top - 15:38:15 up 18 days,  6:19,  1 user,  load average: 0.00, 0.01, 0.05
+Tasks: 106 total,   1 running, 105 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem:   3801380 total,   460440 used,  3340940 free,     1444 buffers
+KiB Swap:  4079612 total,        0 used,  4079612 free.   281596 cached Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+    1 root      20   0   49884   6460   3724 S   0.0  0.2   0:04.41 systemd
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.05 kthreadd
+    3 root      20   0       0      0      0 S   0.0  0.0   0:00.74 ksoftirqd/0
+    5 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 kworker/0:0H
+    7 root      rt   0       0      0      0 S   0.0  0.0   0:00.03 migration/0
+    8 root      20   0       0      0      0 S   0.0  0.0   0:00.00 rcu_bh
+...
+```
+
+
+
