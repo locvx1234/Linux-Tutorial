@@ -141,3 +141,21 @@ The ``atq`` command is used to list the scheduled jobs by the ``at`` command.
 9       Sat Feb 21 16:28:00 2015 a root
 ```
 
+The ``cron`` utility is a time-based scheduling utility program. It can launch routine background jobs at specific times and or days on an on-going basis. cron is driven by a configuration file called ``/etc/crontab`` which contains the various shell commands that need to be run at the properly scheduled times. There are both system-wide crontab files and individual user-based ones. Each line of a crontab file represents a job, and is composed of an expression, followed by a shell command to execute. The ``crontab -e`` command will open the crontab editor to edit existing jobs or to create new jobs. Each line of the crontab file will contain 6 fields:
+
+1. MIN	Minutes	0 to 59
+2. HOUR	Hour field	0 to 23
+3. DOM	Day of Month	1-31
+4. MON	Month field	1-12
+5. DOW	Day Of Week	0-6 (0 = Sunday)
+6. CMD	Command	Any command to be executed
+
+For example, the entry
+```
+* * * * * /usr/local/bin/execute/this/script.sh
+```
+will schedule a job to execute the script every minute of every hour of every day of the month, and every month and every day in the week. The entry
+```
+30 08 10 06 * /home/sysadmin/full-backup
+```
+will schedule a full-backup at 8.30am, 10-June irrespective of the day of the week.
