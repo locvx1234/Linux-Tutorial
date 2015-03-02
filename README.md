@@ -17,3 +17,5 @@ This reposistory reports my hacks with basic linux stuff. It is intended for per
 13. [Network File System](https://github.com/kalise/linux/blob/master/nfs.md)
 14. [Basic Security](https://github.com/kalise/linux/blob/master/basic_security.md)
 15. [Command Line](https://github.com/kalise/linux/blob/master/command_line_prompt.md)
+16. [Text Commands](https://github.com/kalise/linux/blob/master/text_commands.md)
+17. [Bash Programming](https://github.com/kalise/linux/blob/master/bash_programming.md)
