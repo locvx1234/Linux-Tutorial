@@ -6,9 +6,7 @@ Linux provides utilities for file and text manipulation:
 3. Search for patterns using ``grep``.
 
 ###Display contents
-The ``cat`` is short for concatenate and is often used to read and print files as well as for simply viewing file contents.
-
-The ``tac`` command prints the lines of a file in reverse order.
+The ``cat`` is short for concatenate and is often used to read and print files as well as for simply viewing file contents, while the ``tac`` command prints the lines of a file in reverse order.
 ```
 $ cat > myfile.txt
 Mario Rossi
@@ -50,5 +48,34 @@ $ cat myfile2.txt
 Saverio Rossi
 Antonio Esposito
 Michele Laforca
+$ sed -i s/Mario/Saverio/ myfile.txt
+$ cat myfile.txt
+Saverio Rossi
+Antonio Esposito
+Michele Laforca
+```
+For example, to convert 01/02/… to JAN/FEB/…
+```
+sed -e 's/01/JAN/' -e 's/02/FEB/' -e 's/03/MAR/' -e 's/04/APR/' -e 's/05/MAY/' \ 
+-e 's/06/JUN/' -e 's/07/JUL/' -e 's/08/AUG/' -e 's/09/SEP/' -e 's/10/OCT/' \
+-e 's/11/NOV/' -e 's/12/DEC/'
+```
+The ``awk`` command is used to extract and then print specific contents of a file and is often used to construct reports. It is a powerful utility and interpreted programming language, used to manipulate data files, retrieving, and processing text.
+It works well with fields (containing a single piece of data, essentially a column) and records (a collection of fields, essentially a line in a file).
+
+```
+$ awk '{ print $0 }' myfile.txt
+Saverio Rossi
+Antonio Esposito
+Michele Laforca
+$ awk '{ print $1 }' myfile.txt
+Saverio
+Antonio
+Michele
+$ awk '{ print $2 }' myfile.txt
+Rossi
+Esposito
+Laforca
 ```
 
+Please, check the man pages for the ``awk`` and ``sed`` commands
