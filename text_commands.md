@@ -77,5 +77,58 @@ Rossi
 Esposito
 Laforca
 ```
+Please, check the man pages for the ``awk`` and ``sed`` commands for futher details.
 
-Please, check the man pages for the ``awk`` and ``sed`` commands
+###File manipulation
+The ``sort`` command is used to rearrange the lines of a text file either in ascending or descending order, according to a sort key.
+```
+# cat myfile.txt
+Mario Rossi
+Antonio Esposito
+Michele Laforca
+# sort myfile.txt
+Antonio Esposito
+Mario Rossi
+Michele Laforca
+# sort -r myfile.txt
+Michele Laforca
+Mario Rossi
+Antonio Esposito
+```
+The ``uniq`` is used to remove duplicate lines in a text file and is useful for simplifying text display. It requires that the duplicate entries to be removed are consecutive.
+
+```
+# cat myfile.txt
+Mario Rossi
+Antonio Esposito
+Michele Laforca
+Antonio Esposito
+# sort myfile.txt | uniq
+Antonio Esposito
+Mario Rossi
+Michele Laforca
+# sort myfile.txt | uniq -c
+      2 Antonio Esposito
+      1 Mario Rossi
+      1 Michele Laforca
+```
+
+The ``paste`` command is used to combine fields from different files
+
+```
+# cat names.txt
+Mario Rossi
+Antonio Esposito
+Michele Laforca
+Antonio Esposito
+[root@caldera01 ~]# cat ages.txt
+34
+46
+29
+46
+[root@caldera01 ~]# paste names.txt ages.txt
+Mario Rossi     34
+Antonio Esposito        46
+Michele Laforca 29
+Antonio Esposito        46
+```
