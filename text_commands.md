@@ -132,3 +132,30 @@ Antonio Esposito        46
 Michele Laforca 29
 Antonio Esposito        46
 ```
+
+The ``join`` command combines two files on a common field
+
+```
+# cat names.txt
+01 Mario Rossi
+02 Antonio Esposito
+03 Michele Laforca
+04 Antonio Esposito
+# cat ages.txt
+01 34
+02 46
+03 29
+04 46
+# join names.txt ages.txt
+01 Mario Rossi 34
+02 Antonio Esposito 46
+03 Michele Laforca 29
+04 Antonio Esposito 46
+```
+
+The ``grep`` comand is extensively used as a primary text searching tool. It scans files for specified patterns and can be used with regular expressions.
+```
+# grep Ant* names.txt
+02 Antonio Esposito
+04 Antonio Esposito
+```
