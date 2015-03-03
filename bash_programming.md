@@ -141,3 +141,81 @@ The  /var/log/messages  contains  114  lines.
 ```
 In the above example, the output of the inner command becomes the argument for the outer command.
 
+###The if statement
+Conditional decision making using an if statement, is a basic construct that any useful programming or scripting language must have. When an if statement is used, the ensuing actions depend on the evaluation of specified conditions such as:
+
+*. Numerical or string comparisons
+*. Return value of a command (0 for success)
+*. File existence or permissions
+
+In compact form, the syntax of an if statement is:
+```
+if TEST-COMMANDS; then CONSEQUENT-COMMANDS; fi
+```
+A more general definition is:
+```
+if condition
+then
+       statements
+else
+       statements
+fi
+```
+
+The following statement checks for a file argument, and if it is found, then it displays a message
+```
+#!/bin/bash
+if [ -f $1 ]
+then
+    echo "The " $1 " contains " $(wc -l < $1) " lines.";
+    echo $?
+fi
+# ./count.sh /etc/passwd
+The  /etc/passwd  contains  35  lines.
+0
+```
+
+Following options for file check
+
+|Option|Action|
+|------|------|
+|-e file|	Check if the file exists.|
+|-d file|	Check if the file is a directory.|
+|-f file|	Check if the file is a regular file.|
+|-s file|	Check if the file is of non-zero size.|
+|-g file|	Check if the file has sgid set.|
+|-u file|	Check if the file has suid set.|
+|-r file|	Check if the file is readable.|
+|-w file|	Check if the file is writable.|
+|-x file|	Check if the file is executable.|
+
+You can use the if statement to compare strings. The syntax is as follows:
+```
+if [ string1 == string2 ]
+then
+   ACTION
+fi
+```
+
+Or to compare numbers, as follows:
+```
+if [ exp1 OPERATOR exp2 ]
+then
+   ACTION
+fi
+```
+
+The options for operators are:
+
+Following options for file check
+
+|Option|Action|
+|------|------|
+|==|Equal to|
+|-eq|Equal to|
+|-ne|Not equal to|
+|-gt|Greater than|
+|-lt|Less than|
+|-ge|Greater than or equal to|
+|-le|Less than or equal to|
+
