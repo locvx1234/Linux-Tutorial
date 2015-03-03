@@ -102,7 +102,26 @@ For example, the following function is named display:
        echo "This is a sample function"
     }
 ```
-The function can be as long as desired and have many statements. Once defined, the function can be called later as many times as necessary. In the full example shown in the figure, we are also showing an often-used refinement: how to pass an argument to the function.  The first, second, ..., n-th argument can be referred to as ``$1, $2, ..., $n``.
+The function can be as long as desired and have many statements. Once defined, the function can be called later as many times as necessary. In the full example shown in the figure, we are also showing an often-used refinement: how to pass an argument to the function.  The first, second, ..., n-th argument can be referred to as ``$1, $2, ..., $n``. The script name is referred as ``$0``. All parameters are referred as ``$*`` and the total number of arguments is ``$#``.
+```
+# cat script.sh
+#!/bin/bash
+echo The name of this program is: $0
+echo The first argument passed from the command line is: $1
+echo The second argument passed from the command line is: $2
+echo The third argument passed from the command line is: $3
+echo All of the arguments passed from the command line are : $*
+echo All done with $0
+exit 0
+#
+# ./script.sh A B C
+The name of this program is: ./script.sh
+The first argument passed from the command line is: A
+The second argument passed from the command line is: B
+The third argument passed from the command line is: C
+All of the arguments passed from the command line are : A B C
+All done with ./script.sh
+```
 
 ###Command substitution
 You may need to substitute the result of a command as a portion of another command. It can be done in two ways:
@@ -110,12 +129,15 @@ You may need to substitute the result of a command as a portion of another comma
 1. By enclosing the inner command with backticks (`)
 2. By enclosing the inner command in $( )
 
-No matter the method, the innermost command will be executed in a newly launched shell environment, and the standard output of the shell will be inserted where the command substitution was done. Virtually any command can be executed this way. Both of these methods enable command substitution; however, the second method allows command nesting. New scripts should always use this more modern method. For example:
+No matter the method, the innermost command will be executed in a newly launched shell environment, and the standard output of the shell will be inserted where the command substitution was done. Virtually any command can be executed this way. Both of these methods enable command substitution; however, the second method allows command nesting.
 ```
-$ cd /lib/modules/$(uname -r)/
+# cat ./count.sh
+#!/bin/bash
+echo "The " $1 " contains " $(wc -l < $1) " lines."
+echo $?
+# ./count.sh /var/log/messages
+The  /var/log/messages  contains  114  lines.
+0
 ```
 In the above example, the output of the inner command becomes the argument for the outer command.
-
-
-
 
