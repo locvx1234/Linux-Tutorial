@@ -172,9 +172,71 @@ The ``tr`` utility is used to **tr**anslate specified characters into other char
 03 MICHELE LAFORCA
 04 ANTONIO ESPOSITO
 ```
+The ``tee`` command takes the output from any command, and while sending it to standard output, it also saves it to a file.
+```
+# ls -l | tee list.txt
+total 32
+-rw-r--r--. 1 root root   24 Mar  3 14:42 ages.txt
+-rw-------. 1 root root 1883 Jan 21 20:53 anaconda-ks.cfg
+-rw-r--r--. 1 root root   74 Mar  3 14:42 names.txt
+-rwxr--r--. 1 root root  102 Feb 21 16:47 script.sh
+-rw-r--r--. 1 root root   74 Mar  3 14:52 tr
+[root@caldera01 ~]# cat list.txt
+total 32
+-rw-r--r--. 1 root root   24 Mar  3 14:42 ages.txt
+-rw-------. 1 root root 1883 Jan 21 20:53 anaconda-ks.cfg
+-rw-r--r--. 1 root root   74 Mar  3 14:42 names.txt
+-rwxr--r--. 1 root root  102 Feb 21 16:47 script.sh
+-rw-r--r--. 1 root root   74 Mar  3 14:52 tr
+```
 
+The ``wc`` (word count) counts the number of lines, words, and characters in a file or list of files. 
+```
+# cat names.txt
+01 Mario Rossi
+02 Antonio Esposito
+03 Michele Laforca
+04 Antonio Esposito
+[root@caldera01 ~]# wc -l names.txt
+4 names.txt
+[root@caldera01 ~]# wc -c names.txt
+74 names.txt
+[root@caldera01 ~]# wc -w names.txt
+12 names.txt
+```
+The ``cut`` command is used for manipulating column-based files and is designed to extract specific columns. The default column separator is the tab character. A different delimiter can be given as a command option.
+```
+# cut -d" " -f1 names.txt
+01
+02
+03
+04
+# cut -d" " -f2 names.txt
+Mario
+Antonio
+Michele
+Antonio
+# cut -d" " -f3 names.txt
+Rossi
+Esposito
+Laforca
+Esposito
+```
 
-
-
-
-
+The ``head`` reads the first few lines of each named file (10 by default) and displays it on standard output.
+```
+# head -n 2 names.txt
+01 Mario Rossi
+02 Antonio Esposito
+```
+The ``tail`` prints the last few lines of each named file and displays it on standard output. By default, it displays the last 10 lines.
+```
+# tail -n 2 names.txt
+03 Michele Laforca
+04 Antonio Esposito
+#
+# tail -f -n3 /var/log/messages
+Mar  3 14:38:59 caldera01 systemd: Started Session 35 of user root.
+Mar  3 15:01:01 caldera01 systemd: Starting Session 36 of user root.
+Mar  3 15:01:01 caldera01 systemd: Started Session 36 of user root.
+```
