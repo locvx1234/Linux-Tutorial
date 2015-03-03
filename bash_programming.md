@@ -16,7 +16,31 @@ The first line of the script, that starts with ``#!/bin/bash`` contains the full
 /bin/sh
 ```
 
-Typing a long sequence of commands at a terminal window can be complicated, time consuming, and error prone. By deploying shell scripts, using the command-line becomes an efficient and quick way to launch complex sequences of steps. The fact that shell scripts are saved in a file also makes it easy to use them to create new script variations and share standard procedures with several users.
+Scripting is not only limited to shell interpreter. It can be used for Python scripts too.
+```
+# ll script
+-rwxr--r--. 1 root root 55 Mar  3 15:22 script
+# cat script
+#!/usr/bin/python
+print "Welcome to the Python script"
+# ./script
+Welcome to the Python script
+```
 
+Scripts can be interactive too.
 
+```
+# cat script.sh
+#!/bin/bash
+   # Interactive reading of variables
+   echo "ENTER YOUR NAME"
+   read sname
+   # Display of variable values
+   echo "WELCOME "$sname"!"
+# ./script.sh
+ENTER YOUR NAME
+Adriano
+WELCOME Adriano!
+
+```
 
