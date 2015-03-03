@@ -171,19 +171,6 @@ The ``tr`` utility is used to **tr**anslate specified characters into other char
 02 ANTONIO ESPOSITO
 03 MICHELE LAFORCA
 04 ANTONIO ESPOSITO
-# cat names.txt | tr [:space:] '\n'
-01
-Mario
-Rossi
-02
-Antonio
-Esposito
-03
-Michele
-Laforca
-04
-Antonio
-Esposito
 ```
 
 
