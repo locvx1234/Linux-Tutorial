@@ -211,7 +211,6 @@ Following options for file check
 
 |Option|Action|
 |------|------|
-|==|Equal to|
 |-eq|Equal to|
 |-ne|Not equal to|
 |-gt|Greater than|
