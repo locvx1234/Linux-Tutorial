@@ -68,8 +68,53 @@ Scripts require you to follow a standard language syntax. Rules delineate how to
 |;|Used to interpret what follows as a new command|
 |$|Indicates what follows is a variable|
 
+Sometimes you may want to group multiple commands on a single line. The semicolon character is used to separate these commands and execute them sequentially as if they had been typed on separate lines.
 
+The three commands in the following example will all execute even if the ones preceding them fail:
+```
+$ make ; make install ; make clean
+```
+However, you may want to abort subsequent commands if one fails. You can do this using the and operator:
+```
+$ make && make install && make clean
+```
+If the first command fails the second one will never be executed. A final refinement is to use the or operator:
+```
+$ cat file1 || cat file2 || cat file3
+```
+In this case, you proceed until something succeeds and then you stop executing any further steps.
 
+###Functions
+A function is a code block that implements a set of operations. Functions are useful for executing procedures multiple times perhaps with varying input variables. Functions are also often called subroutines. Using functions in scripts requires two steps:
+
+1. Declaring a function
+2. Calling a function
+
+The function declaration requires a name which is used to invoke it. The proper syntax is:
+```
+    function_name () {
+       command...
+    }
+```
+For example, the following function is named display:
+```
+    display () {
+       echo "This is a sample function"
+    }
+```
+The function can be as long as desired and have many statements. Once defined, the function can be called later as many times as necessary. In the full example shown in the figure, we are also showing an often-used refinement: how to pass an argument to the function.  The first, second, ..., n-th argument can be referred to as ``$1, $2, ..., $n``.
+
+###Command substitution
+You may need to substitute the result of a command as a portion of another command. It can be done in two ways:
+
+1. By enclosing the inner command with backticks (`)
+2. By enclosing the inner command in $( )
+
+No matter the method, the innermost command will be executed in a newly launched shell environment, and the standard output of the shell will be inserted where the command substitution was done. Virtually any command can be executed this way. Both of these methods enable command substitution; however, the second method allows command nesting. New scripts should always use this more modern method. For example:
+```
+$ cd /lib/modules/$(uname -r)/
+```
+In the above example, the output of the inner command becomes the argument for the outer command.
 
 
 
