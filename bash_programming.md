@@ -64,7 +64,7 @@ Scripts require you to follow a standard language syntax. Rules delineate how to
 |Character|Description|
 |---------|-----------|
 |#|Used to add a comment, except when used as \#, or as #! when starting a script|
-|\|Used at the end of a line to indicate continuation on to the next line|
+|\\|Used at the end of a line to indicate continuation on to the next line|
 |;|Used to interpret what follows as a new command|
 |$|Indicates what follows is a variable|
 
