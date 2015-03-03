@@ -159,3 +159,35 @@ The ``grep`` comand is extensively used as a primary text searching tool. It sca
 02 Antonio Esposito
 04 Antonio Esposito
 ```
+The ``tr`` utility is used to **tr**anslate specified characters into other characters or to delete them.
+```
+# cat names.txt
+01 Mario Rossi
+02 Antonio Esposito
+03 Michele Laforca
+04 Antonio Esposito
+# cat names.txt | tr a-z A-Z
+01 MARIO ROSSI
+02 ANTONIO ESPOSITO
+03 MICHELE LAFORCA
+04 ANTONIO ESPOSITO
+# cat names.txt | tr [:space:] '\n'
+01
+Mario
+Rossi
+02
+Antonio
+Esposito
+03
+Michele
+Laforca
+04
+Antonio
+Esposito
+```
+
+
+
+
+
+
