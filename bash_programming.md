@@ -41,6 +41,36 @@ Scripts can be interactive too.
 ENTER YOUR NAME
 Adriano
 WELCOME Adriano!
-
 ```
+
+All shell scripts generate a return value upon finishing execution. The value can be set with the ``exit`` statement. Return values permit a process to monitor the exit state of another process often in a parent-child relationship. This helps to determine how this process terminated and take any appropriate steps necessary, contingent on success or failure. By convention, success is returned as 0, and failure is returned as a non-zero value. The return value is always stored in the ``$?`` environment variable.
+```
+# cat names.txt
+01 Mario Rossi
+02 Antonio Esposito
+03 Michele Laforca
+04 Antonio Esposito
+# echo $?
+0
+# cat names
+cat: names: No such file or directory
+# echo $?
+1
+```
+
+###Basic syntax
+Scripts require you to follow a standard language syntax. Rules delineate how to define variables and how to construct and format allowed statements, etc. The table lists some special character usages within bash scripts:
+
+|Character|Description|
+|---------|-----------|
+|#|Used to add a comment, except when used as \#, or as #! when starting a script|
+|\|Used at the end of a line to indicate continuation on to the next line|
+|;|Used to interpret what follows as a new command|
+|$|Indicates what follows is a variable|
+
+
+
+
+
+
 
