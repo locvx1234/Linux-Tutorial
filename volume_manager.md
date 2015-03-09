@@ -11,7 +11,7 @@ With LVM, an hard drive or set of hard drives or different partitions of the sam
 
 The volume groups can be divided into logical volumes, which are assigned mount points, such as ``/home`` and root and file system types, such as **ext2** or **ext3**. When the partitions reach their full capacity, free space from the volume group can be added to the logical volume to increase the size of the partition. When a new hard drive is added to the system, it can be added to the volume group, and partitions that are logical volumes can be increased in size.
 
-###LVM example
+###Extend a LVM layout
 On the local CentOS machine, there are 2 hard drive ``/dev/sda`` and ``/dev/sdb``. The ``/dev/sda`` is partioned as follow
 ```
 # fdisk -l /dev/sda
@@ -224,7 +224,52 @@ tmpfs                1.9G  8.6M  1.8G   1% /run
 tmpfs                1.9G     0  1.9G   0% /sys/fs/cgroup
 /dev/mapper/os-data  412G   33M  412G   1% /data
 /dev/sda1            497M  183M  315M  37% /boot
+```
+
+###Reduce the LVM layout
+Unfortunally we can NOT make a XFS partition smaller online. The only way to shrink is to do a complete dump of data, make a new smaller file system and restore.
 
 ```
+# mkdir /dump
+# mv /data/* /dump/
+# umount /data
+```
+
+Remove the logical volume ``/dev/os/data``
+```
+# lvremove /dev/os/data
+Do you really want to remove active logical volume data? [y/n]: y
+  Logical volume "data" successfully removed
+# lvscan
+  ACTIVE            '/dev/os/root' [50.00 GiB] inherit
+  ACTIVE            '/dev/os/swap' [3.89 GiB] inherit
+```
+To remove unused physical volumes from a volume group, use the ``vgreduce`` command. This command shrinks a volume group's capacity by removing one or more empty physical volumes. This frees those physical volumes to be used in different volume groups or to be removed from the system.
+
+```
+# vgreduce os /dev/sdb1
+  Removed "/dev/sdb1" from volume group "os"
+# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sda2  os   lvm2 a--   73.42g  19.53g
+  /dev/sda3  os   lvm2 a--  158.97g 158.97g
+  /dev/sdb1       lvm2 a--  232.88g 232.88g
+```
+
+Remove the physical volume ``/dev/sdb1`` from the LVM layout
+```
+# pvremove /dev/sdb1
+  Labels on physical volume "/dev/sdb1" successfully wiped
+# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sda2  os   lvm2 a--   73.42g  19.53g
+  /dev/sda3  os   lvm2 a--  158.97g 158.97g
+```
+
+Finally, change the partition type of ``/dev/sdb1`` back to Linux (no LVM), format as XFS and mount it as a standard physical partition
+```
+
+```
+
 
 
