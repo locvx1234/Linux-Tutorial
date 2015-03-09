@@ -61,5 +61,106 @@ The ``/dev/sda1`` is for the ``/boot`` partition and is not into LVM layout. Bot
 ```
 The two partitons are seen as two LVM physical volumes: ``/dev/sda2`` and ``/dev/sda3``. The two phisical volumes are part of the same volume group called ``os``. On top of this volume group there are three logical volumes: ``/root``, ``/data`` and ``/swap``.
 
+We want to increase the space of the LVM layout with a new partition belonging to the second hard drive ``/dev/sdb``. The hard drive is partitioned as follow:
+```
+# fdisk -l /dev/sdb
+
+Disk /dev/sdb: 250.1 GB, 250059350016 bytes, 488397168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x0004da93
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048   488397167   244197560   83  Linux
+
+```
+
+The partition ``/dev/sdb1`` is Linux type. Change the partition type to Linux LVM
+```
+# fdisk /dev/sdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): p
+
+Disk /dev/sdb: 250.1 GB, 250059350016 bytes, 488397168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x0004da93
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048   488397167   244197560   83  Linux
+
+Command (m for help): t
+Selected partition 1
+Hex code (type L to list all codes): 8e
+Changed type of partition 'Linux' to 'Linux LVM'
+
+Command (m for help): p
+
+Disk /dev/sdb: 250.1 GB, 250059350016 bytes, 488397168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x0004da93
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048   488397167   244197560   8e  Linux LVM
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+```
+A warning message which basically means in order to use the new table with the changes a system reboot is required. As workaround, run the ``partprobe -s`` to rescan the partitions.
+
+```
+# partprobe -s
+/dev/sda: msdos partitions 1 2 3
+/dev/sdb: msdos partitions 1
+```
+
+Create a new physical volume from the new partition
+```
+# pvcreate /dev/sdb1
+WARNING: xfs signature detected on /dev/sdb1 at offset 0. Wipe it? [y/n] y
+  Wiping xfs signature on /dev/sdb1.
+  Physical volume "/dev/sdb1" successfully created
+```
+
+Check the new physical volume just created
+```
+# pvdisplay
+   "/dev/sdb1" is a new physical volume of "232.88 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name
+  PV Size               232.88 GiB
+  Allocatable           NO
+  PE Size               0
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               qtRwhD-Pxcv-JQlD-u7xu-lNi0-CiBv-F9XUoO
+```
+
+Now extend the ``os`` volume group by adding in the new physical volume which we created earlier
+```
+```
+
+
 
 
