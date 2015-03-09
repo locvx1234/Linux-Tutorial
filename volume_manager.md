@@ -266,6 +266,21 @@ Remove the physical volume ``/dev/sdb1`` from the LVM layout
   /dev/sda3  os   lvm2 a--  158.97g 158.97g
 ```
 
+Recreate the ``/dev/os/data`` logical with the remaining space in the ``os`` volume group
+```
+# lvcreate -l 100%FREE -n data os
+WARNING: xfs signature detected on /dev/os/data at offset 0. Wipe it? [y/n] y
+  Wiping xfs signature on /dev/os/data.
+  Logical volume "data" created
+# lvscan
+  ACTIVE            '/dev/os/root' [50.00 GiB] inherit
+  ACTIVE            '/dev/os/swap' [3.89 GiB] inherit
+  ACTIVE            '/dev/os/data' [178.50 GiB] inherit
+
+```
+
+Format the volume group just created and mount it as ``/data`` fyle system
+
 Finally, change the partition type of ``/dev/sdb1`` back to Linux (no LVM), format as XFS and mount it as a standard physical partition
 ```
 
