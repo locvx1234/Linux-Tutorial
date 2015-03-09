@@ -141,7 +141,7 @@ WARNING: xfs signature detected on /dev/sdb1 at offset 0. Wipe it? [y/n] y
   Physical volume "/dev/sdb1" successfully created
 ```
 
-Check the new physical volume just created
+Check the new physical volume just created by ``pvdisplay`` command
 ```
 # pvdisplay
    "/dev/sdb1" is a new physical volume of "232.88 GiB"
@@ -159,8 +159,72 @@ Check the new physical volume just created
 
 Now extend the ``os`` volume group by adding in the new physical volume which we created earlier
 ```
+# vgextend os /dev/sdb1
+  Volume group "os" successfully extended
 ```
 
+Using the ``pvscan`` command we scan all disks for physical volumes, this should confirm the new created physical volume ``/dev/sdb1`` and along with the old volumes
+```
+# pvscan
+  PV /dev/sda2   VG os   lvm2 [73.42 GiB / 0    free]
+  PV /dev/sda3   VG os   lvm2 [158.97 GiB / 0    free]
+  PV /dev/sdb1   VG os   lvm2 [232.88 GiB / 232.88 GiB free]
+  Total: 3 [465.28 GiB] / in use: 3 [465.28 GiB] / in no VG: 0 [0   ]
+```
 
+Next want to increase the logical volume ``/dev/os/data`` which basically means we will be taking our original logical volume ``/dev/os/data`` and extending it over the new physical volume ``/dev/sdb1`` just created.
+
+```
+# lvscan
+  ACTIVE            '/dev/os/root' [50.00 GiB] inherit
+  ACTIVE            '/dev/os/swap' [3.89 GiB] inherit
+  ACTIVE            '/dev/os/data' [178.50 GiB] inherit
+# lvextend /dev/os/data /dev/sdb1
+  Extending logical volume data to 411.39 GiB
+  Logical volume data successfully resized
+# lvscan
+  ACTIVE            '/dev/os/root' [50.00 GiB] inherit
+  ACTIVE            '/dev/os/swap' [3.89 GiB] inherit
+  ACTIVE            '/dev/os/data' [411.39 GiB] inherit
+```
+
+Note the size of the logical volume ``/dev/os/data`` increased from 178.50 GiB to 411.39 GiB. Howewer, the size of the ``/data`` file system is still 179G
+```
+# df -h
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/os-root   50G  2.0G   48G   4% /
+devtmpfs             1.8G     0  1.8G   0% /dev
+tmpfs                1.9G     0  1.9G   0% /dev/shm
+tmpfs                1.9G  8.6M  1.8G   1% /run
+tmpfs                1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/mapper/os-data  179G   33M  179G   1% /data
+/dev/sda1            497M  183M  315M  37% /boot
+```
+
+There is then one final step which is to resize the file system so that it can take advantage of this additional space, this is done using the ``resize2fs`` command. In our case, the command will fail since we are using *xfs* file system. We need to use the ``xfs_growfs`` to have the same effect.
+```
+# xfs_growfs /dev/os/data
+meta-data=/dev/mapper/os-data    isize=256    agcount=4, agsize=11698432 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=0
+data     =                       bsize=4096   blocks=46793728, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=0
+log      =internal               bsize=4096   blocks=22848, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 46793728 to 107842560
+
+# df -h
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/os-root   50G  2.0G   48G   4% /
+devtmpfs             1.8G     0  1.8G   0% /dev
+tmpfs                1.9G     0  1.9G   0% /dev/shm
+tmpfs                1.9G  8.6M  1.8G   1% /run
+tmpfs                1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/mapper/os-data  412G   33M  412G   1% /data
+/dev/sda1            497M  183M  315M  37% /boot
+
+```
 
 
