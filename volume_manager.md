@@ -227,7 +227,7 @@ tmpfs                1.9G     0  1.9G   0% /sys/fs/cgroup
 ```
 
 ###Reduce the LVM layout
-Unfortunally we can NOT make a XFS partition smaller online. The only way to shrink is to do a complete dump of data, make a new smaller file system and restore.
+Unfortunally we can NOT make a XFS partition smaller online. The only way to shrink is to do a complete dump of data, make a new smaller volume group and restore the data.
 
 ```
 # mkdir /dump
@@ -244,7 +244,7 @@ Do you really want to remove active logical volume data? [y/n]: y
   ACTIVE            '/dev/os/root' [50.00 GiB] inherit
   ACTIVE            '/dev/os/swap' [3.89 GiB] inherit
 ```
-To remove unused physical volumes from a volume group, use the ``vgreduce`` command. This command shrinks a volume group's capacity by removing one or more empty physical volumes. This frees those physical volumes to be used in different volume groups or to be removed from the system.
+Detouch the physical volume from the volume group. To accomplish this task, use the ``vgreduce`` command. This command shrinks a volume group's capacity by removing one or more physical volumes. This frees the physical volumes to be used in other volume groups or to be removed from the system.
 
 ```
 # vgreduce os /dev/sdb1
@@ -256,7 +256,7 @@ To remove unused physical volumes from a volume group, use the ``vgreduce`` comm
   /dev/sdb1       lvm2 a--  232.88g 232.88g
 ```
 
-Remove the physical volume ``/dev/sdb1`` from the LVM layout
+Since we do not need anymore for the physical volume ``/dev/sdb1`` , remove it from the LVM layout
 ```
 # pvremove /dev/sdb1
   Labels on physical volume "/dev/sdb1" successfully wiped
@@ -266,7 +266,7 @@ Remove the physical volume ``/dev/sdb1`` from the LVM layout
   /dev/sda3  os   lvm2 a--  158.97g 158.97g
 ```
 
-Recreate the ``/dev/os/data`` logical with the remaining space in the ``os`` volume group
+Recreate the ``/dev/os/data`` logical volume with the remaining space in the ``os`` volume group
 ```
 # lvcreate -l 100%FREE -n data os
 WARNING: xfs signature detected on /dev/os/data at offset 0. Wipe it? [y/n] y
@@ -276,15 +276,98 @@ WARNING: xfs signature detected on /dev/os/data at offset 0. Wipe it? [y/n] y
   ACTIVE            '/dev/os/root' [50.00 GiB] inherit
   ACTIVE            '/dev/os/swap' [3.89 GiB] inherit
   ACTIVE            '/dev/os/data' [178.50 GiB] inherit
-
 ```
 
-Format the volume group just created and mount it as ``/data`` fyle system
+Format the volume group just created, mount it as ``/data`` fyle system and restore the data
+```
+# mkfs.xfs -f /dev/os/data
+meta-data=/dev/os/data           isize=256    agcount=4, agsize=11698432 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=0
+data     =                       bsize=4096   blocks=46793728, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=0
+log      =internal log           bsize=4096   blocks=22848, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+# mount -a
+# 
+# df -Th
+Filesystem          Type      Size  Used Avail Use% Mounted on
+/dev/mapper/os-root xfs        50G  2.0G   48G   4% /
+devtmpfs            devtmpfs  1.8G     0  1.8G   0% /dev
+tmpfs               tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs               tmpfs     1.9G  8.5M  1.8G   1% /run
+tmpfs               tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1           xfs       497M  183M  315M  37% /boot
+/dev/mapper/os-data xfs       179G   33M  179G   1% /data
+# 
+# mv /dump/* /data/
+```
 
 Finally, change the partition type of ``/dev/sdb1`` back to Linux (no LVM), format as XFS and mount it as a standard physical partition
 ```
+# fdisk /dev/sdb
+Welcome to fdisk (util-linux 2.23.2).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
 
+Command (m for help): p
+
+Disk /dev/sdb: 250.1 GB, 250059350016 bytes, 488397168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x0004da93
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048   488397167   244197560   8e  Linux LVM
+
+Command (m for help): t
+Selected partition 1
+Hex code (type L to list all codes): 83
+Changed type of partition 'Linux LVM' to 'Linux'
+
+Command (m for help): p
+
+Disk /dev/sdb: 250.1 GB, 250059350016 bytes, 488397168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x0004da93
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048   488397167   244197560   83  Linux
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+# mkfs.xfs -f /dev/sdb1
+meta-data=/dev/sdb1              isize=256    agcount=4, agsize=15262348 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=0
+data     =                       bsize=4096   blocks=61049390, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=0
+log      =internal log           bsize=4096   blocks=29809, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+# mount -a
+# df -Th
+Filesystem          Type      Size  Used Avail Use% Mounted on
+/dev/mapper/os-root xfs        50G  2.0G   48G   4% /
+devtmpfs            devtmpfs  1.8G     0  1.8G   0% /dev
+tmpfs               tmpfs     1.9G     0  1.9G   0% /dev/shm
+tmpfs               tmpfs     1.9G  8.5M  1.8G   1% /run
+tmpfs               tmpfs     1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/sda1           xfs       497M  183M  315M  37% /boot
+/dev/mapper/os-data xfs       179G   33M  179G   1% /data
+/dev/sdb1           xfs       233G   33M  233G   1% /cinder-volumes
+#
 ```
-
-
-
