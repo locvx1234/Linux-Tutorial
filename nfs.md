@@ -20,13 +20,13 @@ Where:
 * ``10.10.10.0/24`` is IP address range of clients
 * ``rw`` is the permission to shared folder
 * ``sync`` synchronizes shared folder
+* ``root_squash`` disable the root privilege
 * ``no_root_squash`` enables the root privilege
 * ``no_all_squash`` enables the user’s authority
 
-Open the port 2049 into the firewall, start and enable the RPC daemon and the NFS server
+The ``no_root_squash`` option leaves root users on NFS clients to write files as root user on the NFS server. Default is ``root_squash``.
+
 ```
-# firewall-cmd --add-port=2049/tcp --permanent
-# firewall-cmd --reload
 # systemctl start rpcbind
 # systemctl start nfs-server
 # systemctl enable rpcbind
@@ -43,3 +43,5 @@ On the client machine mount the shared folder to a local folder
 # touch filename.txt
 ```
 **Note**: this is only for explanation. Please, do not use it in production systems. Check the NFS resources related to your distribution.
+
+To run a NFS server behind the firewall, you should make some changes on the NFS configuration file, e.g. ``/etc/sysconfig/nfs`` on Red Hat/CentOS family, and then enable the ports on the firewall configuration. The reason is that NFS requires the ``rpcbind`` service, which dynamically assigns ports for RPC services and can cause problems for configuring firewall rules. See: [http://initrd.org/wiki/NFS_Setup](http://initrd.org/wiki/NFS_Setup)
