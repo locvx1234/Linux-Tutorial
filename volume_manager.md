@@ -87,6 +87,43 @@ Now create the volume group
   VG UUID               nEcTxG-p5K6-npqD-OVeX-dRI1-aWP9-o4D1Z1
 
 ```
+Now, everything is ready to create the logical volumes from the volume group
+```
+# lvcreate -L 20G -n db-area storage
+  Logical volume "db-area" created.
+# lvcreate -L 10G -n users-area storage
+  Logical volume "users-area" created.
+# lvcreate -L 60G -n staging-area storage
+  Logical volume "staging-area" created.
+# lvcreate -l 100%FREE -n spare storage
+  Logical volume "spare" created.
+# lvs
+  LV           VG      Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  db-area      storage -wi-a-----  20.00g
+  spare        storage -wi-a----- 142.88g
+  staging-area storage -wi-a-----  60.00g
+  users-area   storage -wi-a-----  10.00g
+# lvscan
+  ACTIVE            '/dev/storage/db-area' [20.00 GiB] inherit
+  ACTIVE            '/dev/storage/users-area' [10.00 GiB] inherit
+  ACTIVE            '/dev/storage/staging-area' [60.00 GiB] inherit
+  ACTIVE            '/dev/storage/spare' [142.88 GiB] inherit
+```
+After creating the appropriate filesystem on the logical volumes, they become ready to use for the storage purpose
+```
+# mkfs.ext4 /dev/storage/db-area
+# mkfs.ext4 /dev/storage/users-area
+# mkfs.ext4 /dev/storage/staging-area
+# mkfs.ext4 /dev/storage/spare
+
+# mkdir /db
+# mount /dev/storage/db-area /db
+# mkdir /users
+# mount /dev/storage/users-area /users
+# mkdir /staging
+# mount /dev/storage/staging-area /staging
+
+```
 
 
 ###Extend a LVM layout
