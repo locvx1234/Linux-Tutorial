@@ -11,6 +11,84 @@ With LVM, an hard drive or set of hard drives or different partitions of the sam
 
 The volume groups can be divided into logical volumes, which are assigned mount points, such as ``/home`` and root and file system types, such as **ext2** or **ext3**. When the partitions reach their full capacity, free space from the volume group can be added to the logical volume to increase the size of the partition. When a new hard drive is added to the system, it can be added to the volume group, and partitions that are logical volumes can be increased in size.
 
+###Create a LVM layout
+On my local CentOS machine, there is on additional hard drive ``/dev/sdb`` to use for LVM layout.
+```
+# fdisk /dev/sdb
+Welcome to fdisk (util-linux 2.23.2).
+Disk /dev/sdb: 250.1 GB, 250059350016 bytes, 488397168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x0004da93
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1            2048   488397167   244197560   8e  Linux LVM
+
+Command (m for help):
+```
+
+The disk is already partitioned as Linux LVM, so no needs to do further. To create the LVM layout, first we need to create a physical volume
+```
+# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created
+# pvs
+  PV         VG   Fmt  Attr PSize   PFree
+  /dev/sdb1       lvm2 ---  232.88g 232.88g
+# pvscan
+  PV
+  /dev/sdb1           lvm2 [232.88 GiB]
+  Total: 3 [465.28 GiB] / in use: 2 [232.39 GiB] / in no VG: 1 [232.88 GiB]
+# pvdisplay
+ "/dev/sdb1" is a new physical volume of "232.88 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name
+  PV Size               232.88 GiB
+  Allocatable           NO
+  PE Size               0
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               ajGCMg-Y4cG-v4AD-Wxma-TaE5-zQig-XmnYAx
+```
+
+Now create the volume group
+```
+# vgcreate storage /dev/sdb1
+  Volume group "storage" successfully created
+# vgscan
+  Reading all physical volumes.  This may take a while...
+  Found volume group "storage" using metadata type lvm2
+# vgs
+  VG      #PV #LV #SN Attr   VSize   VFree
+  storage   1   0   0 wz--n- 232.88g 232.88g
+# vgdisplay
+  --- Volume group ---
+  VG Name               storage
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               232.88 GiB
+  PE Size               4.00 MiB
+  Total PE              59618
+  Alloc PE / Size       0 / 0
+  Free  PE / Size       59618 / 232.88 GiB
+  VG UUID               nEcTxG-p5K6-npqD-OVeX-dRI1-aWP9-o4D1Z1
+
+```
+
+
 ###Extend a LVM layout
 On the local CentOS machine, there are 2 hard drive ``/dev/sda`` and ``/dev/sdb``. The ``/dev/sda`` is partioned as follow
 ```
