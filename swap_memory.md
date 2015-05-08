@@ -15,3 +15,13 @@ Filename                                Type            Size    Used    Priority
 ```
 
 Ogni riga elenca una partizione di swap separata utilizzata dal sistema. Una particolarità dello swap su linux è che, se montare due (o più) spazi di swap (preferibilmente su due dispositivi differenti) con la stessa priorità, linux divide le sue attività di swapping tra di loro. Questo si traduce in un incremento notevole delle prestazioni. Per aggiungere una partizione di swap per il vostro sistema, è necessario però prima di prepararla.
+
+###Add a swap area as a file
+```
+dd if=/dev/zero of=/var/swapfile bs=1M count=2048
+chmod 600 /var/swapfile
+mkswap /var/swapfile
+echo /var/swapfile none swap defaults 0 0 | sudo tee -a /etc/fstab
+swapon -a
+```
+
