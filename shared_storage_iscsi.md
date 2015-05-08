@@ -50,13 +50,6 @@ Created network portal 0.0.0.0:3260
 ```
 By default, a portal is created when the iSCSI Target is created listening on all IP addresses (0.0.0.0) and the default iSCSI port 3260. Make sure that the 3260 is not used by another application, else specify a different port.
 
-####Configure the LUNs
-A Logical Unit Number (LUN) is a number used to identify a logical unit, which is a device addressed by the standard SCSI protocol or Storage Area Network protocols which encapsulate SCSI, such as Fibre Channel or iSCSI itself. 
-To configure LUNs, create LUNs of already created storage objects.
-```
-/> /iscsi/iqn.2015-05.com.noverit.caldara02:3260/tpg1/luns/ create /backstores/block/block_storage
-Created LUN 0.
-```
 ####Configure Access List
 Create an Access List for each initiator that will be connecting to the target. This enforces authentication when that initiator connects, allowing only LUNs to be exposed to each initiator. Usually each initator has exclusive access to a LUN. All initiators have unique identifying names IQN. The initiator's unique name IQN must be known to configure ACLs. For open-iscsi initiators, this can be found in the ``/etc/iscsi/initiatorname.iscsi`` file.
 ```
@@ -64,6 +57,14 @@ Create an Access List for each initiator that will be connecting to the target. 
 InitiatorName=iqn.1994-05.com.redhat:2268c31791
 ```
 If required, use this IQN to enforce authentication by creating the ACLs.
+
+####Configure the LUNs
+A Logical Unit Number (LUN) is a number used to identify a logical unit, which is a device addressed by the standard SCSI protocol or Storage Area Network protocols which encapsulate SCSI, such as Fibre Channel or iSCSI itself. 
+To configure LUNs, create LUNs of already created storage objects.
+```
+/> /iscsi/iqn.2015-05.com.noverit.caldara02:3260/tpg1/luns/ create /backstores/block/block_storage
+Created LUN 0.
+```
 At the end of configuration, the iSCSI target envinronment should look like the following
 ```
 /> ls
