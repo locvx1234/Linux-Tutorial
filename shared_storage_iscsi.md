@@ -96,8 +96,70 @@ The ``/etc/target/saveconfig.json`` file contains the above configuration.
 
 Restart the target service 
 ```
-]# service target restart
+# service target restart
 Redirecting to /bin/systemctl restart  target.service
 ```
+###iSCSI Initiator Setup
+After configuring the iSCSI on the target machine, move to setup the iSCSI initiator machine.
+Install admin tools first
 
+```
+# yum -y install iscsi-initiator-utils
+```
+To connect the target, first discover the published iSCSI resouces and then login
+```
+# iscsiadm --mode discovery --type sendtargets --portal caldara02:3260 --discover
+10.10.10.98:3260,1 iqn.2015-05.com.noverit.caldara02:3260
+# iscsiadm --mode node --targetname iqn.2015-05.com.noverit.caldara02:3260 --portal caldara02:3260 --login
+Logging in to [iface: default, target: iqn.2015-05.com.noverit.caldara02:3260, portal: 10.10.10.98,3260] (multiple)
+Login to [iface: default, target: iqn.2015-05.com.noverit.caldara02:3260, portal: 10.10.10.98,3260] successful.
+#
+```
+Since no aothentication has been set, no user and password are required.
+Check the storage block devices.
+```
+[root@caldara01 ~]# lsblk
+NAME                      MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda                         8:0    0 232.9G  0 disk
+├─sda1                      8:1    0   500M  0 part /boot
+├─sda2                      8:2    0  73.4G  0 part
+│ ├─os-swap               253:0    0   3.9G  0 lvm  [SWAP]
+│ ├─os-root               253:1    0    50G  0 lvm  /
+│ └─os-data               253:2    0 178.5G  0 lvm  /data
+└─sda3                      8:3    0   159G  0 part
+  └─os-data               253:2    0 178.5G  0 lvm  /data
+sdc                         8:32   0    20G  0 disk
+sdd                         8:48   0   120G  0 disk
+```
+The two disks ``/dev/sdc`` and ``/dev/sdd`` are the remote iSCSI block devices exported by the target. They are seen as local block devices in the initiator machine. The disks can be used as standard local disks commands and configurations, including ``fdisk``, ``mkfs``, ``e2label``, etc.
+
+```
+# e2label /dev/sdc ANA
+# e2label /dev/sdd ORACLE
+# mkdir /ana
+# mkdir /oracle
+# mount -L ANA /ana
+# mount -L ORACLE /oracle
+# df -h
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/os-root   50G  2.8G   48G   6% /
+devtmpfs             3.8G     0  3.8G   0% /dev
+tmpfs                3.8G     0  3.8G   0% /dev/shm
+tmpfs                3.8G  370M  3.4G  10% /run
+tmpfs                3.8G     0  3.8G   0% /sys/fs/cgroup
+/dev/mapper/os-data  179G   22G  158G  12% /data
+/dev/sda1            497M  228M  270M  46% /boot
+/dev/sdc              20G   45M   19G   1% /ana
+/dev/sdd             118G   60M  112G   1% /oracle
+```
+To disconnect the remote devices, umount and logout
+```
+# umount /ana
+# umount /oracle
+#
+#  iscsiadm --mode node --targetname iqn.2015-05.com.noverit.caldara02:3260 --portal 10.10.10.98 --logout
+Logging out of session [sid: 10, target: iqn.2015-05.com.noverit.caldara02:3260, portal: 10.10.10.98,3260]
+Logout of [sid: 10, target: iqn.2015-05.com.noverit.caldara02:3260, portal: 10.10.10.98,3260] successful.
+#
+```
 
