@@ -1,4 +1,4 @@
-#Shared storage on the network with iSCSI
+###Shared storage on the network with iSCSI
 Many ways to share storage on a network exist. The iSCSI protocol defines a way to see a remote blocks device as a local disk. A remote device on the network is called iSCSI Target, a client which connects to iSCSI Target is called iSCSI Initiator.
 
 ###iSCSI Target Setup
@@ -26,21 +26,21 @@ o- / ...........................................................................
   o- loopback .............................................................................................. [Targets: 0]
 />
 ```
-###Create a Backstore
+####Create a Backstore
 Backstores enable support for different methods of storing an object on the local machine. Creating a storage object defines the resources the backstore will use. The supported backstores are: block devices, files, pscsi and ramdisks. Block devices are in our case.
 ```
 /> /backstores/block create name=block_storage dev=/dev/sdb1
 Generating a wwn serial.
 Created block storage object block_backend using /dev/sdb1.
 ```
-###Create an iSCSI Target
+####Create an iSCSI Target
 Create an iSCSI target using a specified name
 ```
 /> iscsi/ create iqn.2015-05.com.noverit.caldara02:3260
 Created target iqn.2015-05.com.noverit.caldara02:3260.
 Created TPG 1.
 ```
-###Configure an iSCSI Portal
+####Configure an iSCSI Portal
 An iSCSI Portal is an object specifying the IP address and port where the iSCSI target listen to incoming connections
 ```
 /> /iscsi/iqn.2015-05.com.noverit.caldara02:3260/tpg1/portals/ create
@@ -50,14 +50,14 @@ Created network portal 0.0.0.0:3260
 ```
 By default, a portal is created when the iSCSI Target is created listening on all IP addresses (0.0.0.0) and the default iSCSI port 3260. Make sure that the 3260 is not used by another application, else specify a different port.
 
-###Configure the LUNs
+####Configure the LUNs
 A Logical Unit Number (LUN) is a number used to identify a logical unit, which is a device addressed by the standard SCSI protocol or Storage Area Network protocols which encapsulate SCSI, such as Fibre Channel or iSCSI itself. 
 To configure LUNs, create LUNs of already created storage objects.
 ```
 /> /iscsi/iqn.2015-05.com.noverit.caldara02:3260/tpg1/luns/ create /backstores/block/block_storage
 Created LUN 0.
 ```
-###Configure Access List
+####Configure Access List
 Create an Access List for each initiator that will be connecting to the target. This enforces authentication when that initiator connects, allowing only LUNs to be exposed to each initiator. Usually each initator has exclusive access to a LUN. All initiators have unique identifying names IQN. The initiator's unique name IQN must be known to configure ACLs. For open-iscsi initiators, this can be found in the ``/etc/iscsi/initiatorname.iscsi`` file.
 ```
 # cat /etc/iscsi/initiatorname.iscsi
