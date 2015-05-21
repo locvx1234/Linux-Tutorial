@@ -106,6 +106,19 @@ Install admin tools first
 ```
 # yum -y install iscsi-initiator-utils
 ```
+The iSCSI initiator is composed by two services, iscsi and iscsid, start both and enable to start at system startup
+```
+# service iscsid start
+# service iscsi start
+# service iscsid status
+# service iscsi status
+# chkconfig iscsi on
+# chkconfig iscsid on
+# chkconfig --list | grep iscsi
+iscsi           0:off   1:off   2:off   3:on    4:on    5:on    6:off
+iscsid          0:off   1:off   2:on    3:on    4:on    5:on    6:off
+```
+
 To connect the target, first discover the published iSCSI resouces and then login
 ```
 # iscsiadm --mode discovery --type sendtargets --portal caldara02:3260 --discover
@@ -115,7 +128,7 @@ Logging in to [iface: default, target: iqn.2015-05.com.noverit.caldara02:3260, p
 Login to [iface: default, target: iqn.2015-05.com.noverit.caldara02:3260, portal: 10.10.10.98,3260] successful.
 #
 ```
-Since no aothentication has been set, no user and password are required.
+Since no authentication has been set, no user and password are required.
 Check the storage block devices.
 ```
 [root@caldara01 ~]# lsblk
@@ -162,4 +175,22 @@ Logging out of session [sid: 10, target: iqn.2015-05.com.noverit.caldara02:3260,
 Logout of [sid: 10, target: iqn.2015-05.com.noverit.caldara02:3260, portal: 10.10.10.98,3260] successful.
 #
 ```
+
+Stop and then disable the services at startup, if required
+```
+# service iscsid status
+iscsid (pid  1184) is running...
+# service iscsi status
+No active sessions
+# service iscsid stop
+Stopping iscsid:                      [  OK  ]
+# service iscsi stop
+Stopping iscsi:                       [  OK  ]
+# chkconfig iscsid off
+# chkconfig iscsi off
+# chkconfig --list | grep iscsi
+iscsi           0:off   1:off   2:off   3:off   4:off   5:off   6:off
+iscsid          0:off   1:off   2:off   3:off   4:off   5:off   6:off
+```
+
 
