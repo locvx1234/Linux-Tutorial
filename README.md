@@ -15,6 +15,7 @@ This reposistory reports my hacks with basic linux stuff. It is intended for per
 11. [Volume Manager](https://github.com/kalise/linux/blob/master/volume_manager.md)
 12. [Basic Networking](https://github.com/kalise/linux/blob/master/basic_networking.md)
 13. [Network File System](https://github.com/kalise/linux/blob/master/nfs.md)
+14. [Shared Storage iSCSI](https://github.com/kalise/linux/blob/master/shared_storage_iscsi.md)
 14. [Basic Security](https://github.com/kalise/linux/blob/master/basic_security.md)
 15. [Command Line](https://github.com/kalise/linux/blob/master/command_line_prompt.md)
 16. [Text Commands](https://github.com/kalise/linux/blob/master/text_commands.md)
