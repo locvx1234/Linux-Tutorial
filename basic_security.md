@@ -104,3 +104,47 @@ Minimum number of days between password change          : 0
 Maximum number of days between password change          : 99999
 Number of days of warning before password expires       : 7
 ```
+
+###Public/Private Keys for Authentication
+Using encrypted keys for authentication offers two main benefits. Firstly, it is convenient as you no longer need to enter a password if you use public/private keys. Secondly, once public/private key pair authentication has been set up on the server, you can disable password authentication completely meaning that without an authorized key you can't gain access.
+
+Create a private key for client and a public key for server to do it
+```
+# ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+
+# cd /root/.ssh
+# ll
+total 8
+-rw------- 1 root root    0 May 30 11:17 authorized_keys
+-rw------- 1 root root 1675 May 30 11:17 id_rsa
+-rw-r--r-- 1 root root  396 May 30 11:17 id_rsa.pub
+-rw-r--r-- 1 root root    0 May 30 11:07 known_hosts
+# chmod 700 ~/.ssh
+# chmod 600 ~/.ssh/id_rsa
+```
+
+This will create two files in your hidden ssh directory called: ``id_rsa`` and ``id_rsa.pub`` The first is your private key and the other is your public key. Install the public key to the authorized keys list and then remove it from the server
+```
+# cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+# rm -rf ~/.ssh/id_rsa.pub
+```
+Please, note that the same public key can be installed to many servers, just copy it on that server and install to the authorized keys list.
+
+Copy the private key on the client that you will use to connect to the server and then remove it from the server
+```
+# scp ~/.ssh/id_rsa root@clientmachine:root/.ssh/
+# rm -rf ~/.ssh/id_rsa
+```
+
+On Linux and Unix client, use the private key to login to the server
+```
+# ssh -i ~/.ssh/id_rsa root@servermachine
+```
+
+On Windows client, use the puttygen tool to make the key in a suitable format and use the Putty application to login to the server. Please, note that each user that want to login must have his own key pair.
