@@ -22,4 +22,44 @@ drwxr-xr-x. 2 root root    4096 Jun  1 16:09 logs
 drwxr-xr-x. 8 root root    4096 Jun  1 16:37 world
 ```
 
+The MineCraft server can be started at command line, by issuing the following command
+```
+# java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui
+```
 
+Alternately, a systemd configuration file can be created to start, stop, and check the status of the server as a standard system service by using the ``systemctl`` utility
+```
+# vi /lib/systemd/system/minecraftd.service
+[Unit]
+Description=Minecraft Server
+After=syslog.target network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/Minecraft
+ExecStart=/bin/java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+# systemctl start minecraftd
+# systemctl status minecraftd
+minecraftd.service - Minecraft Server
+   Loaded: loaded (/usr/lib/systemd/system/minecraftd.service; disabled)
+   Active: active (running) since Mon 2015-06-01 16:00:12 UTC; 18s ago
+ Main PID: 20975 (java)
+   CGroup: /system.slice/minecraftd.service
+           └─20975 /bin/java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui
+
+# systemctl stop minecraftd
+```
+
+The ``systemctl`` utility can be used to enable/disable the service at startup
+```
+# systemctl enable minecraftd
+ln -s '/usr/lib/systemd/system/minecraftd.service' '/etc/systemd/system/multi-user.target.wants/minecraftd.service'
+# systemctl is-enabled minecraftd
+enabled
+# systemctl disable minecraftd
+```
