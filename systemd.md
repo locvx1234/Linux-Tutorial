@@ -38,6 +38,7 @@ After=syslog.target network.target
 Type=simple
 WorkingDirectory=/root/Minecraft
 ExecStart=/bin/java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui
+SuccessExitStatus=143
 Restart=on-failure
 
 [Install]
@@ -54,6 +55,7 @@ minecraftd.service - Minecraft Server
 
 # systemctl stop minecraftd
 ```
+Note: the ``SuccessExitStatus=143`` is required when a process does not handle the exit signal properly. This is almost always due to programming errors, and is pretty common with Java applications of all types. To avoid a failed status of the MainCraft when stopping the service, the exit code 143 needs to be added into the unit file as a "success" exit status.
 
 The ``systemctl`` utility can be used to enable/disable the service at startup
 ```
