@@ -95,3 +95,7 @@ The ``/lib`` contains libraries (common code shared by applications and needed f
 | /usr/share | Shared data used by applications, generally architecture-independent |
 | /usr/src | Source code, usually for the Linux kernel |
 | /usr/local | Data and programs specific to the local machine. |
+
+###File System Table
+for details on the file system table, i.e. the ``/etc/fstab`` file, please see [fstab (Italian)](https://wiki.archlinux.org/index.php/Fstab_%28Italiano%29#Dischi_esterni)
+
