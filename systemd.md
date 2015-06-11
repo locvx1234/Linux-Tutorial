@@ -65,3 +65,25 @@ ln -s '/usr/lib/systemd/system/minecraftd.service' '/etc/systemd/system/multi-us
 enabled
 # systemctl disable minecraftd
 ```
+
+Here another example
+```
+# cat /etc/systemd/system/redmined.service
+[Unit]
+Description=Redmine Server
+After=syslog.target network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/redmine/redmine
+ExecStart=/usr/bin/ruby bin/rails server -b 0.0.0.0 -p 8080 webrick -e production
+User=redmine
+Group=redmine
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=redmined
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
