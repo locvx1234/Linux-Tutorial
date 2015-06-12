@@ -75,7 +75,9 @@ After=syslog.target network.target
 
 [Service]
 Type=simple
+PermissionsStartOnly=true
 WorkingDirectory=/home/redmine/redmine
+ExecStartPre=/usr/sbin/iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
 ExecStart=/usr/bin/ruby bin/rails server -b 0.0.0.0 -p 8080 webrick -e production
 User=redmine
 Group=redmine
@@ -83,7 +85,9 @@ StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=redmined
 Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
+
 ```
