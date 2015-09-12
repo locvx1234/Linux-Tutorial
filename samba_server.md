@@ -65,12 +65,31 @@ writable = yes
 browsable = yes
 
 [share2]
-path = /samba/user/3ts/data
-valid users = user admin
+path = /samba/user2/data
+valid users = user2 admin
+guest ok = no
+writable = yes
+browsable = yes
+
+[share3]
+path = /samba/user3/data
+valid users = user3 admin
 guest ok = no
 writable = yes
 browsable = yes
 ```
 
-More than one user can be admitted to access the same share. In our case, the share2 is accessible to both "admin" and "user" users while the share1 is only accessible to "admin" and denied to "user".
+More than one user can be admitted to access the same share. In our case, the share1 is only accesible to the "admin" user. The share2 is accessible to "admin" and "user2" users but not "user3". The share3 is accessible to "admin" and "user3" to "user2".
 
+**Note:** the connection to shares by the same Windows client needs to use the same user name. In our case, a Windows client can access all the shares above as "admin" but cannot access to share2 as "user2" AND access to share3 as "user3". If the Windows client needs to access with different users, it needs to logout from the previous user and then login again with a different user. Since Windows caches the login user, it needs to force the logout by issuing the command: ``net use * /delete`` from the Windows command shell
+
+```
+Microsoft Windows [Versione 10.0.10240]
+(c) 2015 Microsoft Corporation. Tutti i diritti sono riservati.
+C:\Users\Adriano>net use * /delete
+Connessioni remote presenti:
+                    \\10.10.10.12\IPC$
+Continuando si annulleranno le connessioni.
+Continuare questa operazione? (S/N) [N]: S
+Esecuzione comando riuscita.
+```
