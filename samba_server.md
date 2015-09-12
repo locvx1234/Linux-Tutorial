@@ -48,8 +48,6 @@ hosts allow = 127. 10.10.10.
 max protocol = SMB3
 ; type of security
 security = user
-; DNS proxy
-dns proxy = no
 ; no printing services
 printing = bsd
 printcap name = /dev/null
