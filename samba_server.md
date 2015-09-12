@@ -99,7 +99,7 @@ Esecuzione comando riuscita.
 ```
 Samba uses different type of security. In the case above, the method is based on user level (default). With this method, each share is assigned specific users that can access it. When a user requests a connection to a share, Samba authenticates by validating the given username and password with the authorized users in the configuration file and the passwords in the password database of the Samba server.
 
-Add the user and set password in the Samba database
+Add the user and set password in the Samba user database
 
 ```
 # smbpasswd -a admin
@@ -107,7 +107,7 @@ New SMB password:
 Retype new SMB password:
 #
 ```
-The ``pdbedit`` command lists the Samba Users Database
+The ``pdbedit`` command lists the Samba users database
 
 ```
 # pdbedit -L
