@@ -16,4 +16,61 @@ The ``nmbd`` server daemon understands and replies to NetBIOS name service reque
 
 The ``winbindd`` service resolves user and group information received from a server running Windows. This makes Windows user and group information understandable by Linux and UNIX platforms. This allows Windows domain users to appear and operate as Linux and UNIX users on a Linux or UNIX machine. Both ``winbindd`` and ``smbd`` are bundled with the Samba distribution, but the ``winbindd`` service is controlled separately from the ``smbd`` service.
 
+####Setup a Samba server
+We'll setup a Samba server to make Linux file sharing available to Windows clients. Install the Samba package, enable and start the ``smbd`` and ``nmbd`` services
+
+```
+# yum install samba
+# systemctl enable smb
+# systemctl enable nmb
+# systemctl start smb
+# systemctl start nmb
+```
+
+Samba uses ``/etc/samba/smb.conf`` as its configuration file. 
+
+```
+# mv /etc/samba/smb.conf /etc/samba/smb.conf.orig
+# vi /etc/samba/smb.conf
+
+# =============== Global configuration ===============
+[global]
+; Windows workgroup name and server description
+workgroup = WORKGROUP
+server string = My SMB Server %v
+; NetBIOS name as the Linux machine will appear in Windows clients
+netbios name = MYSMBSERVER
+; interfaces where the service is listening to
+interfaces = lo ens32
+; permitted hosts to use the Samba server
+hosts allow = 127. 10.10.10.
+; protocol version
+max protocol = SMB3
+; type of security
+security = user
+; DNS proxy
+dns proxy = no
+
+# =============== Shares configuration ===============
+[share1]
+; path of files to share
+path = /samba/admin/data
+; users admitted to use the file sharing service
+valid users = admin
+; no guest user is admitted
+guest ok = no
+; make the share writable as Samba make it as readonly by default
+writable = yes
+; make the share visible as shared folder
+browsable = yes
+
+[share2]
+path = /samba/user/3ts/data
+valid users = user admin
+guest ok = no
+writable = yes
+browsable = yes
+```
+
+More than one user can be admitted to access the same share. In our case, the share2 is accessible to both "admin" and "user" users while the share1 is only accessible to "admin" and denied to "user".
 
