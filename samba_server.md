@@ -40,9 +40,9 @@ workgroup = WORKGROUP
 server string = My SMB Server %v
 ; NetBIOS name as the Linux machine will appear in Windows clients
 netbios name = MYSMBSERVER
-; interfaces where the service is listening to
+; interfaces where the service is listening: localhost and ens32 interfaces
 interfaces = lo ens32
-; permitted hosts to use the Samba server
+; permitted hosts to use the Samba server: localhost and all host belonging to 10.10.10.0/24 subnet
 hosts allow = 127. 10.10.10.
 ; protocol version
 max protocol = SMB3
@@ -96,3 +96,28 @@ Continuando si annulleranno le connessioni.
 Continuare questa operazione? (S/N) [N]: S
 Esecuzione comando riuscita.
 ```
+Samba uses different type of security. In the case above, the method is based on user level (default). With this method, each share is assigned specific users that can access it. When a user requests a connection to a share, Samba authenticates by validating the given username and password with the authorized users in the configuration file and the passwords in the password database of the Samba server.
+
+Set the user password in the Samba password database
+
+```
+# smbpasswd admin
+New SMB password:
+Retype new SMB password:
+#
+```
+The ``pdbedit`` command lists the Samba Users Database
+
+```
+# pdbedit -L
+admin:1000:
+user1:1001:
+user2:1002:
+user3:1003:
+```
+
+Other security methods are: Domain level security and Server level security.
+
+
+
+
