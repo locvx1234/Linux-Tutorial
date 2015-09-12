@@ -50,6 +50,9 @@ max protocol = SMB3
 security = user
 ; DNS proxy
 dns proxy = no
+; no printing services
+printing = bsd
+printcap name = /dev/null
 
 # =============== Shares configuration ===============
 [share1]
@@ -117,7 +120,3 @@ user3:1003:
 ```
 
 Other security methods are: Domain level security and Server level security.
-
-
-
-
