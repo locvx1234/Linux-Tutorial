@@ -21,3 +21,4 @@ This reposistory reports my hacks with basic linux stuff. It is intended for per
 17. [Text Commands](https://github.com/kalise/linux/blob/master/text_commands.md)
 18. [Bash Programming](https://github.com/kalise/linux/blob/master/bash_programming.md)
 19. [Systemd] (https://github.com/kalise/linux/blob/master/systemd.md)
+20. [Samba Server] (https://github.com/kalise/linux/blob/master/samba_server.md)
