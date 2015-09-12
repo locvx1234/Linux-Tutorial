@@ -53,6 +53,7 @@ dns proxy = no
 
 # =============== Shares configuration ===============
 [share1]
+comment = Private Documents
 ; path of files to share
 path = /samba/admin/data
 ; users admitted to use the file sharing service
@@ -65,6 +66,7 @@ writable = yes
 browsable = yes
 
 [share2]
+comment = Public Documents
 path = /samba/user2/data
 valid users = user2 admin
 guest ok = no
@@ -72,6 +74,7 @@ writable = yes
 browsable = yes
 
 [share3]
+comment = Public Documents
 path = /samba/user3/data
 valid users = user3 admin
 guest ok = no
