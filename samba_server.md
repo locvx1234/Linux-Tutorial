@@ -42,6 +42,8 @@ server string = My SMB Server %v
 netbios name = MYSMBSERVER
 ; interfaces where the service is listening: localhost and ens32 interfaces
 interfaces = lo ens32
+; users passwords database backend
+passdb backend = smbpasswd
 ; permitted hosts to use the Samba server: localhost and all host belonging to 10.10.10.0/24 subnet
 hosts allow = 127. 10.10.10.
 ; protocol version
@@ -59,6 +61,7 @@ comment = Private Documents
 path = /samba/admin/data
 ; users admitted to use the file sharing service
 valid users = admin
+invalid users = user2 user3
 ; no guest user is admitted
 guest ok = no
 ; make the share writable as Samba make it as readonly by default
@@ -83,7 +86,21 @@ writable = yes
 browsable = yes
 ```
 
-More than one user can be admitted to access the same share. In our case, the share1 is only accesible to the "admin" user. The share2 is accessible to "admin" and "user2" users but not "user3". The share3 is accessible to "admin" and "user3" to "user2".
+The Samba configuration file can be checked by the ``testparm`` command
+```
+# testparm /etc/samba/smb.conf
+Load smb config files from /etc/samba/smb.conf
+rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
+Processing section "[homes]"
+Processing section "[admin]"
+Processing section "[guest]"
+Loaded services file OK.
+Server role: ROLE_STANDALONE
+Press enter to see a dump of your service definitions
+```
+
+####User access
+More than one user can be admitted to access the same share. In the case above, the share1 is only accesible to the "admin" user. The share2 is accessible to "admin" and "user2" users but not "user3". The share3 is accessible to "admin" and "user3" to "user2".
 
 **Note:** the connection to shares by the same Windows client needs to use the same user name. In our case, a Windows client can access all the shares above as "admin" but cannot access to share2 as "user2" AND access to share3 as "user3". If the Windows client needs to access with different users, it needs to logout from the previous user and then login again with a different user. Since Windows caches the login user, it needs to force the logout by issuing the command: ``net use * /delete`` from the Windows command shell
 
@@ -98,6 +115,8 @@ Continuare questa operazione? (S/N) [N]: S
 Esecuzione comando riuscita.
 ```
 Samba uses different type of security. In the case above, the method is based on user level (default). With this method, each share is assigned specific users that can access it. When a user requests a connection to a share, Samba authenticates by validating the given username and password with the authorized users in the configuration file and the passwords in the password database of the Samba server.
+
+Samba uses different database backends for storing users passwords. The simplest is store the password in a file called ``smbpasswd`` similar to the ``/etc/passwd`` file. Usually this file is located under ``/var/lib/samba/private/smbpasswd``.
 
 Add the user and set password in the Samba user database
 
@@ -117,4 +136,4 @@ user2:1002:
 user3:1003:
 ```
 
-Other security methods are: Domain level security and Server level security.
+Other security methods: domain and server level security are deprecated in latest Samba.
