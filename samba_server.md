@@ -182,13 +182,43 @@ The Samba options deciding the mapping
 ```
 The last three options map the archive, system, and hidden attributes to the owner, group, and world execute bits of the file, respectively. In the example above, the options are used on a per-share basis. Setting them globally makes them the default for all shares. The first option also makes sure that Samba does not change the Windows permission bits.
 
-Samba has several options to help with files and folders creation. The creation masks help to define the permissions a file or directory at the time it is created. On the Linux side, you can control what permissions a file or directory have when it is created. On the Windows side, you can disable the read-only, archive, system, and hidden attributes of a file as well.
+**Note:** These options can be used if the Linux file system supports the extended attributes, and those attributes are enabled, usually via the ``user_xattr`` mount option in the ``/etc/fstab`` file. Unlike _ext3_ and _ext4_, the _xfs_ file system enables the ``user_xattr`` option by default.
+
+Samba has the ``create mask`` and the ``directory mask`` options to help with files and folders creation. The creation masks help to define the permissions a file or directory at the time it is created. On the Linux side, you can control what permissions a file or directory have when it is created. On the Windows side, you can disable the read-only, archive, system, and hidden attributes of a file as well.
 
 ```
 [share]
 ...
 	store dos attributes = yes
-	map archive = yes ;default is yes
-	map system = yes  ;default is no
-	map hidden = yes  ;default is no
+	map archive = yes            ;default is yes
+	map system = yes             ;default is no
+	map hidden = yes             ;default is no
+	create mask = 0744           ;default is 0744
+	directory mask = 0755        ;default is 0755
+```
+
+On the Linux side, new files and folders will look like
+
+```
+# ll /samba/share/user1
+total 0
+-rwxr--r-- 1 user1 samba 0 Sep 15 13:00 mydocument.txt
+drwxr-xr-x 2 user1 samba 6 Sep 15 13:00 myfolder
+```
+
+It is possible force various bits with the ``force create mode`` and ``force directory mode`` options. At the same time, it is possible to force the Linux user and group attributes of a file that is created on the Windows side by the ``force user`` and the ``force group`` options.
+
+```
+[share]
+...
+	store dos attributes = yes
+	map archive = yes            ;default is yes
+	map system = yes             ;default is no
+	map hidden = yes             ;default is no
+	create mask = 0744           ;default is 0744
+	directory mask = 0755        ;default is 0755
+	force create mode = 0000     ;default is 0000
+	force directory mode = 0000  ;default is 0000
+	force user = user1
+	force group samba
 ```
