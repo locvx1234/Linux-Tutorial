@@ -42,8 +42,9 @@ server string = My SMB Server %v
 netbios name = MYSMBSERVER
 ; interfaces where the service is listening: localhost and ens32 interfaces
 interfaces = lo ens32
-; users passwords database backend
+; users passwords database backend and location
 passdb backend = smbpasswd
+smb passwd file = /etc/samba/smbpasswd
 ; permitted hosts to use the Samba server: localhost and all host belonging to 10.10.10.0/24 subnet
 hosts allow = 127. 10.10.10.
 ; protocol version
@@ -116,7 +117,7 @@ Esecuzione comando riuscita.
 ```
 Samba uses different type of security. In the case above, the method is based on user level (default). With this method, each share is assigned specific users that can access it. When a user requests a connection to a share, Samba authenticates by validating the given username and password with the authorized users in the configuration file and the passwords in the password database of the Samba server.
 
-Samba uses different database backends for storing users passwords. The simplest is store the password in a file called ``smbpasswd`` similar to the ``/etc/passwd`` file. Usually this file is located under ``/var/lib/samba/private/smbpasswd``.
+Samba uses different database backends for storing users passwords. The simplest is store the password in a file called ``smbpasswd`` similar to the ``/etc/passwd`` file. Usually this file is located under ``/var/lib/samba/private/smbpasswd`` but location can be changed.
 
 Add the user and set password in the Samba user database
 
