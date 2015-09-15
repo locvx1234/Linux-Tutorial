@@ -158,3 +158,37 @@ subsystem request failed on channel 0
 Couldn't read packet: Connection reset by peer
 ```
 Alternatively, you can leave the ssh but should chroot the user's home directory.
+
+####File permissions and attributes
+In our example above, we are going to share Linux files and folders to Windows clients. Since Windows and Linux use different approach to file permissions and attributes, Samba will take care of mapping the two approaches.
+
+All Linux files have read, write, and execute bits for three classifications of users: owner (u), group (g), and rest of the world (o). Windows, on the other hand, has four principal bits that it uses with any file: read-only, system, hidden, and archive:
+
+1. Read-only. The file's contents can be read by a user but cannot be written to.
+2. System. This file has a specific purpose required by the operating system.
+3. Hidden. This file has been marked to be invisible to the user, unless the operating systems is explicitly set to show it.
+4. Archive. This file has been touched since the last backup was performed on it.
+
+There is no bit to specify that a file is executable since Windows identifies executable files by looking at the file extension. Windows files stored on a Linux Samba share have their own attributes that need to be preserved. Samba preserves these bits by reusing the Linux executable permission bits of the file, if it is instructed to do so. Mapping these bits, however, has a side-effect: if a Windows user stores a file in a Samba share, at Linux side, some of the executable bits are set.
+
+The Samba options deciding the mapping
+```
+[share]
+...
+	store dos attributes = yes
+	map archive = yes ;default is yes
+	map system = yes  ;default is no
+	map hidden = yes  ;default is no
+```
+The last three options map the archive, system, and hidden attributes to the owner, group, and world execute bits of the file, respectively. In the example above, the options are used on a per-share basis. Setting them globally makes them the default for all shares. The first option also makes sure that Samba does not change the Windows permission bits.
+
+Samba has several options to help with files and folders creation. The creation masks help to define the permissions a file or directory at the time it is created. On the Linux side, you can control what permissions a file or directory have when it is created. On the Windows side, you can disable the read-only, archive, system, and hidden attributes of a file as well.
+
+```
+[share]
+...
+	store dos attributes = yes
+	map archive = yes ;default is yes
+	map system = yes  ;default is no
+	map hidden = yes  ;default is no
+```
