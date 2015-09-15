@@ -222,3 +222,5 @@ It is possible force various bits with the ``force create mode`` and ``force dir
 	force user = user1
 	force group samba
 ```
+
+With the ``create mask`` and ``create directory mask`` options, the administrator allow the permission bits to be set by the requested user. On the other side, the ``force create mode`` and ``force directory mode`` will force a particular bit to be set, even if it wasn’t requested by the user.
