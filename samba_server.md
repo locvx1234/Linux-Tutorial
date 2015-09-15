@@ -138,3 +138,23 @@ user3:1003:
 ```
 
 Other security methods: domain and server level security are deprecated in latest Samba.
+
+With smbpasswd database backend, a Samba user should exist as valid user in the Linux machine. To secure the Linux machine preventing login from Samba users, you should disable the login from these users
+```
+# useradd -d /samba/share user1
+# usermod -s /bin/false user1
+# cat /etc/passwd | grep user1
+user1:x:1003:1002::/samba/share:/sbin/nologin
+#
+# ssh user1@localhost
+user1@localhost's password:
+Last login: Tue Sep 15 11:50:08 2015
+This account is currently not available.
+Connection to localhost closed.
+#
+# sftp user1@localhost
+user1@localhost's password:
+subsystem request failed on channel 0
+Couldn't read packet: Connection reset by peer
+```
+Alternatively, you can leave the ssh but should chroot the user's home directory.
