@@ -270,6 +270,108 @@ Let's check our data file
 +--------------+---------------+-----------+
 ```
 
-Our data is safe!
+Our data is safe! Now we want to resize the logical volume to use only 1 LUN instead of 2 LUNs as we made before. Firt of all, shutdown any service or application that is using the logical volume we want to resize. In our case, we have to stop the MySQL database running on the volume
+```
+[root@caldera01 test_db]# systemctl stop mysql
+[root@caldera01 test_db]# systemctl status mysql
+mysqld.service - MySQL Community Server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled)
+   Active: inactive (dead) since Thu 2015-10-22 12:13:28 CEST; 2min 12s ago
+ Main PID: 15388 (code=exited, status=0/SUCCESS)
+```
 
+Make a backup of ALL yuor data present on the volume
+```
+[root@caldera01 test_db]# tar cvf data_backup.tar *
+[root@caldera01 test_db]# gzip data_backup.tar
+[root@caldera01 test_db]# mv data_backup.tar /data_backup_folder
+```
 
+Umount the LV
+```
+[root@caldera01 ~]# umount /db
+```
+
+Then check for the file-system error (Must pass in every 5 steps of file-system check if not there might be some issue with your file-system)
+
+```
+[root@caldera01 /]# e2fsck -ff /dev/vgdb/lvol1
+e2fsck 1.42.9 (28-Dec-2013)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/vgdb/lvol1: 403/41484288 files (10.9% non-contiguous), 2803302/165906432 blocks
+```
+
+Now let's to resize the file system. Since we want to remove the last LUN, we have to calculate the final size of the file system by summing its original size ``/dev/sdb1`` to the size of the first added LUN ``/dev/sdc``. We have ``/dev/sdb1`` Total PE 59618 + ``/dev/sdc`` Total PE 59617 = Total PE 119235. Total size, expressed in Megabyte are 4 x 119235 = 476940 MB
+
+```
+[root@caldera01 ~]# pvdisplay
+--- Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name               vgdb
+  PV Size               232.88 GiB / not usable 2.18 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              59618
+  Free PE               0
+  Allocated PE          59618
+  PV UUID               mymhL6-Ta6m-cx3V-LjKM-Zo2T-K7Xj-MI1jb3
+
+  --- Physical volume ---
+  PV Name               /dev/sdc
+  VG Name               vgdb
+  PV Size               232.89 GiB / not usable 7.18 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              59617
+  Free PE               0
+  Allocated PE          59617
+  PV UUID               0dIQWO-jjaa-zgl3-1o8E-8kGR-4xjc-BxPmwO
+
+  --- Physical volume ---
+  PV Name               /dev/sdd
+  VG Name               vgdb
+  PV Size               232.89 GiB / not usable 7.18 MiB
+  Allocatable           yes
+  PE Size               4.00 MiB
+  Total PE              59617
+  Free PE               16834
+  Allocated PE          42783
+  PV UUID               Df0M7R-6KDB-TUeZ-l1Gw-2r5J-ci4c-MsyNw4
+  
+[root@caldera01 ~]# [root@caldera01 /]# fsadm -e -y resize /dev/vgdb/lvol1 476940M
+-bash: [root@caldera01: command not found
+[root@caldera01 ~]# fsadm -e -y resize /dev/vgdb/lvol1 476940M
+resize2fs 1.42.9 (28-Dec-2013)
+Resizing the filesystem on /dev/mapper/vgdb-lvol1 to 122096640 (4k) blocks.
+The filesystem on /dev/mapper/vgdb-lvol1 is now 122096640 blocks long.
+```
+
+Reduce the Logical Volume and remove the last LUN from the Volume Group
+```
+[root@caldera01 ~]# lvreduce -L 476940M /dev/vgdb/lvol1
+  WARNING: Reducing active logical volume to 465.76 GiB
+  THIS MAY DESTROY YOUR DATA (filesystem etc.)
+Do you really want to reduce lvol1? [y/n]: y
+  Size of logical volume vgdb/lvol1 changed from 632.88 GiB (162018 extents) to 465.76 GiB (119235 extents).
+  Logical volume lvol1 successfully resized
+  
+[root@caldera01 ~]# vgreduce vgdb /dev/sdd
+  Removed "/dev/sdd" from volume group "vgdb"
+[root@caldera01 ~]#
+```
+
+Remove the physical volume
+```
+[root@caldera01 ~]# pvremove /dev/sdd
+  Labels on physical volume "/dev/sdd" successfully wiped
+[root@caldera01 ~]#
+```
+
+And check again the file system
+```
+
+```
