@@ -342,8 +342,6 @@ Now let's to resize the file system. Since we want to remove the last LUN, we ha
   Allocated PE          42783
   PV UUID               Df0M7R-6KDB-TUeZ-l1Gw-2r5J-ci4c-MsyNw4
   
-[root@caldera01 ~]# [root@caldera01 /]# fsadm -e -y resize /dev/vgdb/lvol1 476940M
--bash: [root@caldera01: command not found
 [root@caldera01 ~]# fsadm -e -y resize /dev/vgdb/lvol1 476940M
 resize2fs 1.42.9 (28-Dec-2013)
 Resizing the filesystem on /dev/mapper/vgdb-lvol1 to 122096640 (4k) blocks.
