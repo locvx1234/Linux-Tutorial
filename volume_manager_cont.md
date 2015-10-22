@@ -192,6 +192,7 @@ Now let's to extend the LV ``lvol1`` by using the 2 additional LUNs
   ACTIVE            '/dev/os/data' [174.63 GiB] inherit
   ACTIVE            '/dev/os/swap' [7.77 GiB] inherit
   ACTIVE            '/dev/vgdb/lvol1' [232.88 GiB] inherit
+
 [root@caldera01 ~]# lvextend -L +400G /dev/vgdb/lvol1
   Size of logical volume vgdb/lvol1 changed from 232.88 GiB (59618 extents) to 632.88 GiB (162018 extents).
   Logical volume lvol1 successfully resized
