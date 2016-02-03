@@ -1,5 +1,5 @@
-## Basic Linux
-This reposistory reports my hacks with basic linux stuff. It is intended for personal use only.
+## Linux Tutorial
+This tutorial is for a basic Linux knowledge. It is intended for personal use only.
 
 ###Summary
 1. [Basic Commands](https://github.com/kalise/linux/blob/master/basic_commands.md)
