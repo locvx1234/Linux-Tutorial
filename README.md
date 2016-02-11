@@ -2,7 +2,7 @@
 This tutorial is for a basic Linux knowledge. It is intended for personal use only.
 
 ###Summary
-1. [Basic Commands](https://github.com/kalise/linux/blob/master/basic_commands.md)
+1. [Basic Commands](https://github.com/kalise/linux/blob/master/content/basic_commands.md)
 2. [Working with files](https://github.com/kalise/linux/blob/master/working_with_files.md)
 3. [File System](https://github.com/kalise/linux/blob/master/filesytem.md)
 4. [File Permissions](https://github.com/kalise/linux/blob/master/file_permissions.md)
