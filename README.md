@@ -13,6 +13,7 @@ This tutorial is for a basic Linux knowledge. It is intended for personal use on
 9. [User Envinronment](https://github.com/kalise/linux/blob/master/user_env.md)
 10. [Processes](https://github.com/kalise/linux/blob/master/processes.md)
 11. [Volume Manager](https://github.com/kalise/linux/blob/master/volume_manager.md)
+12. [Volume Manager (cont.)](https://github.com/kalise/linux/blob/master/volume_manager_cont.md)
 12. [Basic Networking](https://github.com/kalise/linux/blob/master/basic_networking.md)
 13. [Network File System](https://github.com/kalise/linux/blob/master/nfs.md)
 14. [Shared Storage iSCSI](https://github.com/kalise/linux/blob/master/shared_storage_iscsi.md)
