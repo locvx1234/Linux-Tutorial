@@ -1,5 +1,5 @@
 ## Linux Tutorial
-This tutorial is for a basic Linux knowledge. It is intended for personal use only.
+This tutorial is about Linux knowledge. It is intended for personal use only.
 
 ###Summary
 1. [Basic Commands](https://github.com/kalise/linux/blob/master/content/basic_commands.md)
@@ -13,7 +13,7 @@ This tutorial is for a basic Linux knowledge. It is intended for personal use on
 9. [User Envinronment](https://github.com/kalise/linux/blob/mastercontent//user_env.md)
 10. [Processes](https://github.com/kalise/linux/blob/master/content/processes.md)
 11. [Volume Manager](https://github.com/kalise/linux/blob/master/content/volume_manager.md)
-12. [Volume Manager (cont.)](https://github.com/kalise/linux/blob/master/content/volume_manager_cont.md)
+12. [Advanced Volume Manager](https://github.com/kalise/linux/blob/master/content/volume_manager_cont.md)
 12. [Basic Networking](https://github.com/kalise/linux/blob/master/content/basic_networking.md)
 13. [Network File System](https://github.com/kalise/linux/blob/master/content/nfs.md)
 14. [Shared Storage iSCSI](https://github.com/kalise/linux/blob/master/content/shared_storage_iscsi.md)
@@ -23,3 +23,5 @@ This tutorial is for a basic Linux knowledge. It is intended for personal use on
 18. [Bash Programming](https://github.com/kalise/linux/blob/master/content/bash_programming.md)
 19. [Systemd](https://github.com/kalise/linux/blob/master/content/systemd.md)
 20. [Samba Server](https://github.com/kalise/linux/blob/master/content/samba_server.md)
+21. [Virtual Networking](https://github.com/kalise/linux/blob/master/content/virtual-networking.md)
+22. [Network Namespaces](https://github.com/kalise/linux/blob/master/content/network-namespaces.md)
