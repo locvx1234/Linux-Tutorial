@@ -86,7 +86,7 @@ Some Linux distributions prefer you add a file in the directory ``/etc/sudoers.d
 Linux is considered to be more secure than many other operating systems because processes are naturally isolated from each other. One process normally cannot access the resources of another process, even when that process is running with the same user privileges. Additional security mechanisms that have been recently introduced in order to make risks even smaller are:
 
 1. **Control Groups**: allows system administrators to group processes and associate finite resources to each group (**cgroup**).
-2. **Linux Containers**: makes it possible to run multiple isolated Linux systems containers on a single system by relying on **cgroups**.
+2. **Linux Containers**: makes it possible to run multiple isolated Linux systems containers on a single system.
 3. **Virtualization**: hardware is emulated in such a way that not only processes can be isolated, but entire systems are run simultaneously as isolated and insulated guests (**virtual machines**) on one physical host.
 
 ###Password encryption
