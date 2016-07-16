@@ -153,5 +153,9 @@ Because our cluster does not manage shred data resources, there is no risk to ha
 
     [root@holly ~]# pcs property set stonith-enabled=false
 
+####Accessing the cluster form a Web GUI
+Clusters are accessible also via a Web GUI. Point the browser to the primary member node and login as the ``hacluster`` user
 
-
+    https://<primary_node_ip>:2224
+  
+  
