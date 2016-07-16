@@ -9,3 +9,20 @@ In the Linux world, there are many cluster tools. The most used is **Pacemaker**
 2. **Cluster Resource Management Daemon**: cluster resources managed by this component can be queried by client systems, moved, instantiated, and changed when needed. Each cluster node also includes a local resource manager daemon that acts as an interface between Cluster Resource Manager daemon and the resource itself. The local resource manager passes commands from Cluster Resource Manager to agents, such as starting and stopping and relaying resurce status information.
 3. **Fencing Manager**: often deployed in conjunction with a power supply switch, this component acts as a cluster resource in Pacemaker that processes fence requests, forcefully powering down nodes and removing them from the cluster to ensure data integrity.
 
+####Install and Configure Pacemaker
+We are going to setup a simple HA Cluster based on Pacemaker as following. This example will be also used to explain the basic concepts of Linux Clustering. 
+
+                                      |
+    +----------------------+          |          +----------------------+
+    | [       Node01     ] |10.0.0.51 | 10.0.0.52| [       Node02     ] |
+    |   holly.noverit.com  +----------+----------+   benji.noverit.com  |
+    |                      |                     |                      |
+    +----------------------+                     +----------------------+
+
+
+Install Pacemaker on both the nodes
+
+    [root@holly ~]# yum -y install pacemaker pcs
+    [root@benji ~]# yum -y install pacemaker pcs
+    
+
