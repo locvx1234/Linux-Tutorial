@@ -61,7 +61,35 @@ Only on a node of the cluster, configure the cluster
     Restaring pcsd on the nodes in order to reload the certificates...
     benji: Success
     holly: Success
-    
-    
+
+On the same node, start and enable the cluster
+
+    [root@holly ~]# pcs cluster start --all
+    benji: Starting Cluster...
+    holly: Starting Cluster...
+    [root@holly ~]# pcs cluster enable --all
+    holly: Cluster Enabled
+    benji: Cluster Enabled
+
+
+Check the status of the cluster
+
+    [root@holly ~]# pcs status
+    Cluster name: mycluster
+    WARNING: no stonith devices and stonith-enabled is not false
+    Last updated: Sat Jul 16 17:20:14 2016
+    Stack: corosync
+    Current DC: holly (version 1.1.13-10.el7_2.2-44eb2dd) - partition with quorum
+    2 nodes and 0 resources configured
+    Online: [ benji holly ]
+    Full list of resources:
+      PCSD Status:
+        holly: Online
+        benji: Online
+    Daemon Status:
+        corosync: active/enabled
+        pacemaker: active/enabled
+        pcsd: active/enabled
+
 
 
