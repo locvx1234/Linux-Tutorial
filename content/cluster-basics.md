@@ -47,6 +47,7 @@ Only on a node of the cluster, configure the cluster
     Password:
     holly: Authorized
     benji: Authorized
+
     [root@holly ~]# pcs cluster setup --name mycluster holly benji
     Shutting down pacemaker/corosync services...
     Redirecting to /bin/systemctl stop  pacemaker.service
@@ -67,6 +68,7 @@ On the same node, start and enable the cluster
     [root@holly ~]# pcs cluster start --all
     benji: Starting Cluster...
     holly: Starting Cluster...
+
     [root@holly ~]# pcs cluster enable --all
     holly: Cluster Enabled
     benji: Cluster Enabled
@@ -82,8 +84,8 @@ Check the status of the cluster
     Current DC: holly (version 1.1.13-10.el7_2.2-44eb2dd) - partition with quorum
     2 nodes and 0 resources configured
     Online: [ benji holly ]
-    Full list of resources:
-      PCSD Status:
+    Full list of resources: -
+    PCSD Status:
         holly: Online
         benji: Online
     Daemon Status:
@@ -91,5 +93,11 @@ Check the status of the cluster
         pacemaker: active/enabled
         pcsd: active/enabled
 
+Some interesting info:
 
+  1. The Designated Coordinator (DC) is the node holly where from we configured the cluster
+  2. There are only 2 nodes onlyne and no resurces
+  3. The name of the cluster is "mycluster"
+  4. All daemons: corosync, pacemaker and pcsd are active and enabled
+  5. Fencing (stonith) is enabled but no fencing devices are configured
 
