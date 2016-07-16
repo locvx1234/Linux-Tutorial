@@ -10,7 +10,7 @@ In the Linux world, there are many cluster tools to achieve High Availability of
 3. **Fencing Manager**: often deployed in conjunction with a power supply switch, this component acts as a cluster resource in Pacemaker that processes fence requests, forcefully powering down nodes and removing them from the cluster to ensure data integrity. Pacemaker use a fencing technique called **STONITH** (Shoot The Other Node In The Head) intended to prevent data corruption caused by faulty nodes in a cluster that are unresponsive but still accessing application data (the so called "Split Brain Scenario").
 
 ####Install and Configure a simple Cluster
-Pacemaker requires a messaging layer daemon, called Corosync that provides a cluster membership and closed communication model for creating replicated state machines, on top of which Pacemaker can run. Corosync can be seen as the underlying system that connects the cluster nodes together, while Pacemaker monitors the cluster and takes action in the event of a failure. In addition, we are going to use PCS, a command line interface that interacts with both Corosync and Pacemaker.
+Pacemaker requires a messaging layer daemon, called **Corosync** that provides a cluster membership and closed communication model for creating replicated state machines, on top of which Pacemaker can run. Corosync can be seen as the underlying system that connects the cluster nodes together, while Pacemaker monitors the cluster and takes action in the event of a failure. In addition, we are going to use **PCS**, a command line interface that interacts with both Corosync and Pacemaker.
 
 This example will be also used to explain the basic concepts of Linux Clustering. 
 
