@@ -149,7 +149,7 @@ Confirm that both nodes joined the cluster by running the following command on a
              2          1 benji
     [root@holly ~]#
 
-Because our cluster does not managed shred resources, there is no risk to have a Split Brain Scenario and so we are going to disable fencing
+Because our cluster does not manage shred data resources, there is no risk to have a Split Brain Scenario and so we are going to disable fencing
 
     [root@holly ~]# pcs property set stonith-enabled=false
 
