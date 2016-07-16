@@ -3,14 +3,16 @@ A cluster is two or more computers (cluster members) that work together to perfo
 
 Typically, services in a high availability cluster maintain data integrity as one cluster member takes over control of a service from another cluster member. Node failures in a high availability cluster are not visible from clients outside the cluster.
 
-In the Linux world, there are many cluster tools. The most used is **Pacemaker**. A cluster configured with Pacemaker comprises separate component daemons that monitor cluster membership, scripts that manage the services, and resource management subsystems that monitor the resources. The following components form the Pacemaker architecture:
+In the Linux world, there are many cluster tools to achieve High Availability of a resource. The most used is **Pacemaker**. A cluster configured with Pacemaker comprises separate component daemons that monitor cluster membership, scripts that manage the services, and resource management subsystems that monitor the resources. The following components form the Pacemaker architecture:
 
 1. **Cluster Information Base**: the Pacemaker information daemon distributes and synchronizes the cluster configuration and status information from the Designated Coordinator (DC) of the cluster to all other cluster members. The DC is one cluster member designated to store the cluster state.
 2. **Cluster Resource Management Daemon**: cluster resources managed by this component can be queried by client systems, moved, instantiated, and changed when needed. Each cluster node also includes a local resource manager daemon that acts as an interface between Cluster Resource Manager daemon and the resource itself. The local resource manager passes commands from Cluster Resource Manager to agents, such as starting and stopping and relaying resurce status information.
-3. **Fencing Manager**: often deployed in conjunction with a power supply switch, this component acts as a cluster resource in Pacemaker that processes fence requests, forcefully powering down nodes and removing them from the cluster to ensure data integrity.
+3. **Fencing Manager**: often deployed in conjunction with a power supply switch, this component acts as a cluster resource in Pacemaker that processes fence requests, forcefully powering down nodes and removing them from the cluster to ensure data integrity. Pacemaker use a fencing technique called **STONITH** (Shoot The Other Node In The Head) intended to prevent data corruption caused by faulty nodes in a cluster that are unresponsive but still accessing application data (the so called "Split Brain Scenario").
 
-####Install and Configure Pacemaker
-We are going to setup a simple HA Cluster based on Pacemaker as following. This example will be also used to explain the basic concepts of Linux Clustering. 
+####Install and Configure a simple Cluster
+Pacemaker requires a messaging layer daemon, called Corosync that provides a cluster membership and closed communication model for creating replicated state machines, on top of which Pacemaker can run. Corosync can be seen as the underlying system that connects the cluster nodes together, while Pacemaker monitors the cluster and takes action in the event of a failure. In addition, we are going to use PCS, a command line interface that interacts with both Corosync and Pacemaker.
+
+This example will be also used to explain the basic concepts of Linux Clustering. 
 
                                       |
     +----------------------+          |          +----------------------+
@@ -19,19 +21,15 @@ We are going to setup a simple HA Cluster based on Pacemaker as following. This 
     | 10.10.10.22          |                     | 10.10.10.24          |
     +----------------------+                     +----------------------+
 
-Install, start and enable Pacemaker on both the nodes
+Install, start and enable Pacemaker and PCS on both the nodes. Because Corosync is a dependency to Pacemaker, it's usually a better idea to simply install Pacemaker and let the system decide which Corosync version should be installed.
 
     [root@holly ~]# yum -y install pacemaker pcs
     [root@holly ~]# systemctl start pcsd
     [root@holly ~]# systemctl enable pcsd
-    [root@holly ~]# passwd hacluster
-    Changing password for user hacluster
 
     [root@benji ~]# yum -y install pacemaker pcs
     [root@benji ~]# systemctl start pcsd
     [root@benji ~]# systemctl enable pcsd
-    [root@benji ~]# passwd hacluster
-    Changing password for user hacluster
 
 Pacemaker need to communicate beween nodes, enable the port firewall on each node, which by default is 2224 over TCP. Otherwise, disable the firewall if you are working in a secure setup.
 
@@ -40,13 +38,24 @@ Pacemaker need to communicate beween nodes, enable the port firewall on each nod
     [root@benji ~]# systemctl stop firewalld
     [root@benji ~]# systemctl disable firewalld
 
-Only on a node of the cluster, configure the cluster
+The PCS utility creates a user during installation, named ``hacluster``, with a disabled password. We need to define a password for this user on both servers. This will enable PCS to perform tasks such as synchronizing the Corosync configuration on multiple nodes, as well as starting and stopping the cluster.
+
+    [root@holly ~]# passwd hacluster
+    Changing password for user hacluster
+    [root@benji ~]# passwd hacluster
+    Changing password for user hacluster
+
+Use the same password on both servers. We are going to use this password to configure the cluster in the next step. Please, note that the user ``hacluster`` has no interactive shell or home directory associated with its account, which means it's not possible to log into the server using its credentials.
+
+Only on a node of the cluster, authenticate the cluster nodes
 
     [root@holly ~]# pcs cluster auth holly benji
     Username: hacluster
     Password:
     holly: Authorized
     benji: Authorized
+
+From the same node, generate the Corosync configuration
 
     [root@holly ~]# pcs cluster setup --name mycluster holly benji
     Shutting down pacemaker/corosync services...
@@ -63,7 +72,36 @@ Only on a node of the cluster, configure the cluster
     benji: Success
     holly: Success
 
-On the same node, start and enable the cluster
+This will generate a cluster configuration file (i.e. the cluster information base) located at ``/etc/corosync/corosync.conf`` based on the parameters provided to the cluster setup command:
+
+    [root@holly ~]# cat /etc/corosync/corosync.conf
+    totem {
+        version: 2
+        secauth: off
+        cluster_name: mycluster
+        transport: udpu
+    }
+    nodelist {
+        node {
+            ring0_addr: holly
+            nodeid: 1
+        }
+        node {
+            ring0_addr: benji
+            nodeid: 2
+        }
+    }
+    quorum {
+        provider: corosync_votequorum
+        two_node: 1
+    }
+    logging {
+        to_logfile: yes
+        logfile: /var/log/cluster/corosync.log
+        to_syslog: yes
+    }
+
+Start and enable the cluster
 
     [root@holly ~]# pcs cluster start --all
     benji: Starting Cluster...
@@ -100,4 +138,20 @@ Some interesting info:
   3. The name of the cluster is "mycluster"
   4. All daemons: corosync, pacemaker and pcsd are active and enabled
   5. Fencing (stonith) is enabled but no fencing devices are configured
+
+Confirm that both nodes joined the cluster by running the following command on any of the servers
+
+    [root@holly ~]# pcs status corosync
+    Membership information
+    ----------------------
+        Nodeid      Votes Name
+             1          1 holly (local)
+             2          1 benji
+    [root@holly ~]#
+
+Because our cluster does not managed shred resources, there is no risk to have a Split Brain Scenario and so we are going to disable fencing
+
+    [root@holly ~]# pcs property set stonith-enabled=false
+
+
 
