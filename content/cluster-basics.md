@@ -14,15 +14,54 @@ We are going to setup a simple HA Cluster based on Pacemaker as following. This 
 
                                       |
     +----------------------+          |          +----------------------+
-    | [       Node01     ] |10.0.0.51 | 10.0.0.52| [       Node02     ] |
-    |   holly.noverit.com  +----------+----------+   benji.noverit.com  |
-    |                      |                     |                      |
+    | Node01               |          |          | Node02               |
+    | holly.noverit.com    +----------+----------+ benji.noverit.com    |
+    | 10.10.10.22          |                     | 10.10.10.24          |
     +----------------------+                     +----------------------+
 
-
-Install Pacemaker on both the nodes
+Install, start and enable Pacemaker on both the nodes
 
     [root@holly ~]# yum -y install pacemaker pcs
+    [root@holly ~]# systemctl start pcsd
+    [root@holly ~]# systemctl enable pcsd
+    [root@holly ~]# passwd hacluster
+    Changing password for user hacluster
+
     [root@benji ~]# yum -y install pacemaker pcs
+    [root@benji ~]# systemctl start pcsd
+    [root@benji ~]# systemctl enable pcsd
+    [root@benji ~]# passwd hacluster
+    Changing password for user hacluster
+
+Pacemaker need to communicate beween nodes, enable the port firewall on each node, which by default is 2224 over TCP. Otherwise, disable the firewall if you are working in a secure setup.
+
+    [root@holly ~]# systemctl stop firewalld
+    [root@holly ~]# systemctl disable firewalld
+    [root@benji ~]# systemctl stop firewalld
+    [root@benji ~]# systemctl disable firewalld
+
+Only on a node of the cluster, configure the cluster
+
+    [root@holly ~]# pcs cluster auth holly benji
+    Username: hacluster
+    Password:
+    holly: Authorized
+    benji: Authorized
+    [root@holly ~]# pcs cluster setup --name mycluster holly benji
+    Shutting down pacemaker/corosync services...
+    Redirecting to /bin/systemctl stop  pacemaker.service
+    Redirecting to /bin/systemctl stop  corosync.service
+    Killing any remaining services...
+    Removing all cluster configuration files...
+    holly: Succeeded
+    benji: Succeeded
+    Synchronizing pcsd certificates on nodes holly, benji...
+    benji: Success
+    holly: Success
+    Restaring pcsd on the nodes in order to reload the certificates...
+    benji: Success
+    holly: Success
     
+    
+
 
