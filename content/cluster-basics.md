@@ -157,5 +157,23 @@ Because our cluster does not manage shred data resources, there is no risk to ha
 Clusters are accessible also via a Web GUI. Point the browser to the primary member node and login as the ``hacluster`` user
 
     https://<primary_node_ip>:2224
-  
+
+####Stop the Cluster
+Cluster nodes should not be halted as standard nodes. It's always a best practice to shutdown the cluster first and then shutdown the system.
+
+To stop the cluster on a signle node
+
+    [root@benji ~]# pcs cluster stop
+    Stopping Cluster (pacemaker)... Stopping Cluster (corosync)...
+    [root@benji ~]# pcs cluster status
+    Error: cluster is not currently running on this node
+
+Or on all nodes of the cluster
+
+    [root@holly ~]# pcs cluster stop --all
+    holly: Stopping Cluster (pacemaker)...
+    benji: Stopping Cluster (pacemaker)...
+    benji: Stopping Cluster (corosync)...
+    holly: Stopping Cluster (corosync)...
+    [root@holly ~]#
   
