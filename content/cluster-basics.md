@@ -149,9 +149,13 @@ Confirm that both nodes joined the cluster by running the following command on a
              2          1 benji
     [root@holly ~]#
 
-Because our cluster does not manage shred data resources, there is no risk to have a Split Brain Scenario and so we are going to disable fencing
+Because our cluster does not manage shared data resources, there is no risk to have a Split Brain Scenario and so we are going to disable fencing
 
     [root@holly ~]# pcs property set stonith-enabled=false
+
+Cluster quorum as a concept (see later) makes no sense in a two-node scenario, because you only have it when more than half the nodes are available, so we'll disable it too.
+
+    [root@holly ~]# pcs property set no-quorum-policy=ignore
 
 ####Accessing the cluster form a Web GUI
 Clusters are accessible also via a Web GUI. Point the browser to the primary member node and login as the ``hacluster`` user
