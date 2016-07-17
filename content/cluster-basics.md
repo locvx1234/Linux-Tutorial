@@ -168,9 +168,7 @@ To see a recap of the Cluster properties
      no-quorum-policy: ignore
      stonith-enabled: false
 
-
-
-Cluster nodes should not be halted as standard nodes. It's always a best practice to shutdown the cluster first and then shutdown the system.
+Cluster nodes should not be halted as other standard nodes. It's always a best practice to shutdown the cluster first and then shutdown the system.
 
 To stop the cluster on a signle node
 
@@ -191,7 +189,7 @@ Or on all nodes of the cluster
 ####Add a resource to the Cluster
 Lets add a cluster service, we'll choose one doesn't require too much configuration and works everywhere to make things easy.
 
-Install and configure the HTTP Server on both the nodes. Note: not need to start/enable the service.
+Install and configure an HTTP Server on both the nodes. Note: not need to start/enable the service.
 
     [root@benji ~]# yum install -y httpd
     [root@benji ~]# echo "Hello Benji" > /var/www/html/index.html
@@ -200,20 +198,20 @@ Install and configure the HTTP Server on both the nodes. Note: not need to start
 
 Add the HTTP Server as resource of the cluster
 
-    [root@benji ~]# pcs resource create HTTPServer apache \
+    [root@benji ~]# pcs resource create HTTPServer ocf:heartbeat:apache \
     > configfile=/etc/httpd/conf/httpd.conf \
     > op monitor interval=1min
 
-The name of the resource is "HTTPServer" of type "apache". The command tells Pacemaker to check the health of this service every 60 seconds by calling the agent's monitor action.
+The name of the resource is ``HTTPServer`` of type ``ocf:heartbeat:apache``. The type defined for a resource tell the cluster which script to use for the resource, the provider of the script and what standards it conforms to. In that case, the standard is **Open Cluster Framework**. The command tells also Pacemaker to check the health of this service every 60 seconds by calling the agent's monitor action.
 
 Add a Virtual IP address as second resource of the cluster. This IP Address will be used by clients of the cluster to access the HTTP Server resource
 
-    [root@benji ~]# pcs resource create VirtualIP IPaddr2 \
+    [root@benji ~]# pcs resource create VirtualIP ocf:heartbeat:IPaddr2 \
     > ip=10.10.10.23 \
     > cidr_netmask=24 \
     > op monitor interval=30s
 
-The name of the resource is "VirtualIP" of type IP address (IPaddr2). The command tells Pacemaker to check the health of this service every 30 seconds by calling the agent's monitor action. The Virtual IP resource binds the IP address specified in the command above to the network interface of the node owning the Virtual IP resources
+The name of the resource is ``VirtualIP`` of type ``ocf:heartbeat:IPaddr2``. The command tells also Pacemaker to check the health of this service every 30 seconds by calling the agent's monitor action. The Virtual IP resource binds the IP address specified in the command above to the network interface of the node owning the Virtual IP resources. This Virtual IP is floating from one node to the other, depending on the status of the node itself:
 
     [root@benji ~]# ip addr show ens32
     2: ens32: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
@@ -221,6 +219,12 @@ The name of the resource is "VirtualIP" of type IP address (IPaddr2). The comman
         inet 10.10.10.24/24 brd 10.10.10.255 scope global ens32
            valid_lft forever preferred_lft forever
         inet 10.10.10.23/24 brd 10.10.10.255 scope global secondary ens32
+           valid_lft forever preferred_lft forever
+    [root@benji ~]# ip addr show ens32
+    [root@holly ~]# ip addr show ens32
+    2: ens32: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+        link/ether 00:0c:29:77:68:56 brd ff:ff:ff:ff:ff:ff
+        inet 10.10.10.22/24 brd 10.10.10.255 scope global ens32
            valid_lft forever preferred_lft forever
 
 Set that HTTPServer and VirtualIP are always on a same node
@@ -267,5 +271,3 @@ and make sure resource will switch to the other node
 Cluster management is possible also via a Web GUI. Point the browser to the primary member node and login as the ``hacluster`` user
 
     https://<primary_node_ip>:2224
-
-
