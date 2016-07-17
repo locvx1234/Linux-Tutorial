@@ -70,7 +70,18 @@ Make sure the same configuration file is present on both the nodes
         server holly 10.10.10.22:80 check
         server benji 10.10.10.24:80 check
 
-Now add the HAProxy as resource to the Cluster. Since we wont the Load Balancer running on both the nodes to handle the client's requests, we'll configure it as Systemd daemon.
+The HAProxy binds to the Virtual IP address and then forward the client's requests to the HTTP Servers in a Round Robin fashion. To avoid conflict binding between the HTTP Server and HAProxy, make sure the HTTP Servers listen only on the IP addresses. To achieve this, configure the ``/etc/httpd/conf/httpd.conf`` configuration file, by specifing the IP address:
+
+    [root@benji ~]# vi /etc/httpd/conf/httpd.conf
+    ...
+    Listen 10.10.10.24:80
+    ...
+    [root@holly ~]# vi /etc/httpd/conf/httpd.conf
+    ...
+    Listen 10.10.10.22:80
+    ...
+
+Since we need the Load Balancer running on both the nodes to handle the client's requests, add the HAProxy resource to the Cluster as a Systemd daemon.
 
     [root@benji ~]# pcs resource create haproxy systemd:haproxy \
     > op monitor interval=15s clone
@@ -104,7 +115,30 @@ and check the status
           pacemaker: active/enabled
           pcsd: active/enabled
 
-The Cluster is running with HTTP Server and HAProxy running on both the nodes. Check the services are started in Systemd fashion
+The Cluster is running with the Virtual IP on the **Benji** node
+
+    [root@benji ~]#  netstat -tupln | grep 80
+    tcp        0      0 10.10.10.23:80          0.0.0.0:*               LISTEN      9251/haproxy
+    tcp        0      0 10.10.10.24:80          0.0.0.0:*               LISTEN      1729/httpd
+    [root@benji ~]# ip addr show ens32
+    2: ens32: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+        link/ether 00:0c:29:20:d2:dd brd ff:ff:ff:ff:ff:ff
+        inet 10.10.10.24/24 brd 10.10.10.255 scope global ens32
+           valid_lft forever preferred_lft forever
+        inet 10.10.10.23/32 brd 10.10.10.255 scope global ens32
+           valid_lft forever preferred_lft forever
+
+    [root@holly ~]# netstat -tupln | grep 80
+    tcp        0      0 10.10.10.23:80          0.0.0.0:*               LISTEN      18467/haproxy
+    tcp        0      0 10.10.10.22:80          0.0.0.0:*               LISTEN      18444/httpd
+    udp6       0      0 fe80::20c:29ff:fe77:123 :::*                                623/ntpd
+    [root@holly ~]#  ip addr show ens32
+    2: ens32: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+        link/ether 00:0c:29:77:68:56 brd ff:ff:ff:ff:ff:ff
+        inet 10.10.10.22/24 brd 10.10.10.255 scope global ens32
+           valid_lft forever preferred_lft forever
+
+Check the services are started in Systemd fashion
 
     [root@benji ~]# systemctl status haproxy
     ● haproxy.service - Cluster Controlled haproxy
@@ -137,3 +171,29 @@ and
                └─1734 /usr/sbin/httpd -DFOREGROUND
     Jul 18 01:05:52 benji systemd[1]: Starting Cluster Controlled httpd...
     Jul 18 01:05:53 benji systemd[1]: Started Cluster Controlled httpd.
+
+Set that the order of starting is the Virtual IP first and then the other services. This is required to assure there is always an IP Address where to send client's requests. Also make sure that the Floating IP and the HAProxy are always working togheter.
+
+    [root@benji ~]# pcs constraint order VIP-10.10.10.23 then haproxy-clone
+    Adding VIP-10.10.10.23 haproxy-clone (kind: Mandatory) (Options: first-action=start then-action=start)
+    [root@benji ~]# pcs constraint order httpd-clone then haproxy-clone
+    Adding httpd-clone haproxy-clone (kind: Mandatory) (Options: first-action=start then-action=start)
+    [root@benji ~]# pcs constraint colocation add VIP-10.10.10.23 with haproxy-clone
+    [root@benji ~]# pcs constraint
+    Location Constraints:
+    Ordering Constraints:
+      start VIP-10.10.10.23 then start haproxy-clone (kind:Mandatory)
+      start httpd-clone then start haproxy-clone (kind:Mandatory)
+    Colocation Constraints:
+      VIP-10.10.10.23 with haproxy-clone (score:INFINITY)
+
+We are redy to test the Cluster
+
+    [stack@director ~]$ curl http://10.10.10.23
+    Hello Holly
+    [stack@director ~]$ curl http://10.10.10.23
+    Hello Benji
+    [stack@director ~]$ curl http://10.10.10.23
+    Hello Holly
+
+
