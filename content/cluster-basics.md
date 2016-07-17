@@ -213,7 +213,15 @@ Add a Virtual IP address as second resource of the cluster. This IP Address will
     > cidr_netmask=24 \
     > op monitor interval=30s
 
-The name of the resource is "VirtualIP" of type IP address (IPaddr2). The command tells Pacemaker to check the health of this service every 30 seconds by calling the agent's monitor action.
+The name of the resource is "VirtualIP" of type IP address (IPaddr2). The command tells Pacemaker to check the health of this service every 30 seconds by calling the agent's monitor action. The Virtual IP resource binds the IP address specified in the command above to the network interface of the node owning the Virtual IP resources
+
+    [root@benji ~]# ip addr show ens32
+    2: ens32: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+        link/ether 00:0c:29:20:d2:dd brd ff:ff:ff:ff:ff:ff
+        inet 10.10.10.24/24 brd 10.10.10.255 scope global ens32
+           valid_lft forever preferred_lft forever
+        inet 10.10.10.23/24 brd 10.10.10.255 scope global secondary ens32
+           valid_lft forever preferred_lft forever
 
 Set that HTTPServer and VirtualIP are always on a same node
 
