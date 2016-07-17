@@ -9,7 +9,7 @@ In the Linux world, there are many cluster tools to achieve High Availability of
 2. **Cluster Resource Management Daemon**: cluster resources managed by this component can be queried by client systems, moved, instantiated, and changed when needed. Each cluster node also includes a local resource manager daemon that acts as an interface between Cluster Resource Manager daemon and the resource itself. The local resource manager passes commands from Cluster Resource Manager to agents, such as starting and stopping and relaying resurce status information.
 3. **Fencing Manager**: often deployed in conjunction with a power supply switch, this component acts as a cluster resource in Pacemaker that processes fence requests, forcefully powering down nodes and removing them from the cluster to ensure data integrity. Pacemaker use a fencing technique called **STONITH** (Shoot The Other Node In The Head) intended to prevent data corruption caused by faulty nodes in a cluster that are unresponsive but still accessing application data (the so called "Split Brain Scenario").
 
-####Install and Configure a simple Cluster
+####Install a simple Cluster
 Pacemaker requires a messaging layer daemon, called **Corosync** that provides a cluster membership and closed communication model for creating replicated state machines, on top of which Pacemaker can run. Corosync can be seen as the underlying system that connects the cluster nodes together, while Pacemaker monitors the cluster and takes action in the event of a failure. In addition, we are going to use **PCS**, a command line interface that interacts with both Corosync and Pacemaker.
 
 This example will be also used to explain the basic concepts of Linux Clustering. 
@@ -157,12 +157,19 @@ Cluster quorum as a concept (see later) makes no sense in a two-node scenario, b
 
     [root@holly ~]# pcs property set no-quorum-policy=ignore
 
-####Accessing the cluster form a Web GUI
-Clusters are accessible also via a Web GUI. Point the browser to the primary member node and login as the ``hacluster`` user
+To see a recap of the Cluster properties
 
-    https://<primary_node_ip>:2224
+    [root@benji ~]# pcs property list
+    Cluster Properties:
+     cluster-infrastructure: corosync
+     cluster-name: mycluster
+     dc-version: 1.1.13-10.el7_2.2-44eb2dd
+     have-watchdog: false
+     no-quorum-policy: ignore
+     stonith-enabled: false
 
-####Stop the Cluster
+
+
 Cluster nodes should not be halted as standard nodes. It's always a best practice to shutdown the cluster first and then shutdown the system.
 
 To stop the cluster on a signle node
@@ -181,3 +188,76 @@ Or on all nodes of the cluster
     holly: Stopping Cluster (corosync)...
     [root@holly ~]#
   
+####Add a resource to the Cluster
+Lets add a cluster service, we'll choose one doesn't require too much configuration and works everywhere to make things easy.
+
+Install and configure the HTTP Server on both the nodes. Note: not need to start/enable the service.
+
+    [root@benji ~]# yum install -y httpd
+    [root@benji ~]# echo "Hello Benji" > /var/www/html/index.html
+    [root@holly ~]# yum install -y httpd
+    [root@holly ~]# echo "Hello Holly" > /var/www/html/index.html
+
+Add the HTTP Server as resource of the cluster
+
+    [root@benji ~]# pcs resource create HTTPServer apache \
+    > configfile=/etc/httpd/conf/httpd.conf \
+    > op monitor interval=1min
+
+The name of the resource is "HTTPServer" of type "apache". The command tells Pacemaker to check the health of this service every 60 seconds by calling the agent's monitor action.
+
+Add a Virtual IP address as second resource of the cluster. This IP Address will be used by clients of the cluster to access the HTTP Server resource
+
+    [root@benji ~]# pcs resource create VirtualIP IPaddr2 \
+    > ip=10.10.10.23 \
+    > cidr_netmask=24 \
+    > op monitor interval=30s
+
+The name of the resource is "VirtualIP" of type IP address (IPaddr2). The command tells Pacemaker to check the health of this service every 30 seconds by calling the agent's monitor action.
+
+Set that HTTPServer and VirtualIP are always on a same node
+
+    [root@benji ~]# pcs constraint colocation add HTTPServer with VirtualIP
+
+Set that the order of starting is VirtualIP first and then HTTPServer. This is required to assure there is always an IP Address where to send client's requests
+
+    [root@holly ~]# pcs constraint order VirtualIP then HTTPServer
+    Adding VirtualIP HTTPServer (kind: Mandatory) (Options: first-action=start then-action=start)
+
+See the status of both the resources
+
+    [root@benji ~]# pcs status resources
+     VirtualIP      (ocf::heartbeat:IPaddr2):       Started by benji
+     HTTPServer     (ocf::heartbeat:apache):        Started by holly
+
+and resources constraints
+
+    [root@holly ~]# pcs constraint
+    Location Constraints:
+    Ordering Constraints:
+      start VirtualIP then start HTTPServer (kind:Mandatory)
+    Colocation Constraints:
+      HTTPServer with VirtualIP (score:INFINITY)
+
+Now we can access the HTTP Server from a web client by pointing to the Virtual IP Address 10.10.10.23
+
+    [stack@director ~]$ curl http://10.10.10.23
+    Hello Benji
+
+To test Cluster failover, stop current active node manually 
+
+    [root@benji html]# pcs cluster stop
+    Stopping Cluster (pacemaker)... Stopping Cluster (corosync)...
+    
+
+and make sure resource will switch to the other node
+
+    [stack@director ~]$ curl http://10.10.10.23
+    Hello Holly
+
+####Accessing the cluster management form a Web GUI
+Cluster management is possible also via a Web GUI. Point the browser to the primary member node and login as the ``hacluster`` user
+
+    https://<primary_node_ip>:2224
+
+
