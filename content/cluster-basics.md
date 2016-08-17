@@ -23,11 +23,13 @@ This example will be also used to explain the basic concepts of Linux Clustering
 
 Install, start and enable Pacemaker and PCS on both the nodes. Because Corosync is a dependency to Pacemaker, it's usually a better idea to simply install Pacemaker and let the system decide which Corosync version should be installed.
 
-    [root@holly ~]# yum -y install pacemaker pcs
+    [root@holly ~]# yum -y install pacemaker
+    [root@holly ~]# yum -y install pcs
     [root@holly ~]# systemctl start pcsd
     [root@holly ~]# systemctl enable pcsd
 
-    [root@benji ~]# yum -y install pacemaker pcs
+    [root@benji ~]# yum -y install pacemaker
+    [root@benji ~]# yum -y install pcs
     [root@benji ~]# systemctl start pcsd
     [root@benji ~]# systemctl enable pcsd
 
