@@ -10,7 +10,7 @@ This tutorial is about Linux knowledge. It is intended for personal use only.
 6. [Data Backup](https://github.com/kalise/linux/blob/master/content/data_backup.md)
 7. [System Info](https://github.com/kalise/linux/blob/master/content/system_info.md)
 8. [Swap Memory](https://github.com/kalise/linux/blob/master/content/swap_memory.md)
-9. [User Envinronment](https://github.com/kalise/linux/blob/mastercontent//user_env.md)
+9. [User Envinronment](https://github.com/kalise/linux/blob/mastercontent/user_env.md)
 10. [Processes](https://github.com/kalise/linux/blob/master/content/processes.md)
 11. [Volume Manager Basics](https://github.com/kalise/linux/blob/master/content/volume_manager.md)
 12. [Advanced Volume Manager](https://github.com/kalise/linux/blob/master/content/volume_manager_cont.md)
