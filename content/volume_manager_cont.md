@@ -78,11 +78,25 @@ datadir=/db/mysql
 [root@caldera01 ~]# systemctl enable mysqld
 ```
 
-From GitHub, install s sample database with an integrated test suite, used to test your applications and database servers
+From GitHub, install a sample database with an integrated test suite, used to test your applications and database servers
 ```
 [root@caldera01 ~]# yum install -y git
 [root@caldera01 ~]# git clone https://github.com/datacharmer/test_db.git
 [root@caldera01 ~]# cd /db/test_db
+```
+
+Load the test database
+```
+[root@caldera01 ~]# mysql < employees.sql
+```
+
+If you want to install with two large partitioned tables, alternatively, run
+```
+[root@caldera01 ~]# mysql < employees_partitioned.sql
+```
+
+Run the test suite
+```
 [root@caldera01 ~]# mysql  -t < test_employees_md5.sql
 +----------------------+
 | INFO                 |
